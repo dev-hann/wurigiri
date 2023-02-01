@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "318733930126",
+    "project_id": "wurigiri-34a71",
+    "storage_bucket": "wurigiri-34a71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318733930126:android:4e4f9763eaaa54cd06c3df",
+        "android_client_info": {
+          "package_name": "com.example.wurigiri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318733930126-vj1pp5cujr3heutlnmvlhcpl2a1dlsjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0ixWZ87gTPtZm5Wh_rwVzMfyIFW5B-Vc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318733930126-vj1pp5cujr3heutlnmvlhcpl2a1dlsjv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "318733930126-i5lv0geohgau88032af5bkiuh5m3fgmt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wurigiri"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318733930126:android:e81e20f8ecb199bd06c3df",
+        "android_client_info": {
+          "package_name": "com.wurigiri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318733930126-vj1pp5cujr3heutlnmvlhcpl2a1dlsjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0ixWZ87gTPtZm5Wh_rwVzMfyIFW5B-Vc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318733930126-vj1pp5cujr3heutlnmvlhcpl2a1dlsjv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "318733930126-i5lv0geohgau88032af5bkiuh5m3fgmt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wurigiri"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

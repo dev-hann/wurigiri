@@ -1,0 +1,35 @@
+name: wurigiri
+description: 지영이랑 여환이랑 우리끼리
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # StateManager
+  get:
+
+  # Utils
+  platform_device_id: ^1.0.1
+  equatable:
+
+  # Firebase
+  firebase_core:
+  cloud_firestore:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_native_splash: ^1.2.1
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: HiMelody
+      fonts:
+        - asset: fonts/HiMelody-Regular.ttf
+  assets:
+    - assets/
