@@ -1,26 +1,7 @@
-part of fire_repo;
+part of setting_repo;
 
-class FireImpl extends FireRepo {
+class SettingImpl extends SettingRepo {
   final FireService service = FireService();
-  @override
-  Future requestUser(String deviceID) {
-    return service.get(
-      collection: "user",
-      document: deviceID,
-    );
-  }
-
-  @override
-  Future updateUser({
-    required String key,
-    required Map<String, dynamic> data,
-  }) {
-    return service.update(
-      collection: "user",
-      document: key,
-      data: data,
-    );
-  }
 
   final settingKey = "setting";
 

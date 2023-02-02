@@ -6,10 +6,10 @@ class Notify extends Equatable {
     required this.feed,
   });
   final int chat;
-  final int feed;
+  final bool feed;
 
   factory Notify.empty() {
-    return const Notify(chat: 0, feed: 0);
+    return const Notify(chat: 0, feed: false);
   }
 
   @override
@@ -34,7 +34,7 @@ class Notify extends Equatable {
 
   Notify copyWith({
     int? chat,
-    int? feed,
+    bool? feed,
   }) {
     return Notify(
       chat: chat ?? this.chat,

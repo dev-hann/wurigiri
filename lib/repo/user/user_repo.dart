@@ -1,9 +1,16 @@
 library user_repo;
 
-import 'package:platform_device_id/platform_device_id.dart';
+import 'package:wurigiri/data/service.dart';
 
 part 'user_impl.dart';
 
 abstract class UserRepo {
-  Future<String> loadUserID();
+  Future<List<Map<String, dynamic>>> requestUserList();
+
+  dynamic loadUser();
+  Future<dynamic> requestUser(String deviceID);
+  Future<dynamic> updateUser({
+    required String id,
+    required Map<String, dynamic> data,
+  });
 }

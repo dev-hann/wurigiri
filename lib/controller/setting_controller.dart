@@ -1,18 +1,15 @@
 import 'package:get/get.dart';
 import 'package:wurigiri/model/setting.dart';
-import 'package:wurigiri/repo/fire/fire_repo.dart';
-import 'package:wurigiri/repo/notify/notify_repo.dart';
+import 'package:wurigiri/repo/setting/setting_repo.dart';
 
 class SettingController extends GetxController {
   SettingController(
     this.settingRepo,
-    this.fireRepo,
   );
 
   static SettingController find() => Get.find<SettingController>();
 
-  final FireRepo fireRepo;
-  final NotifyRepo settingRepo;
+  final SettingRepo settingRepo;
 
   Setting? setting;
   bool get isLoading => setting == null;
@@ -24,7 +21,7 @@ class SettingController extends GetxController {
   }
 
   void _initSettingStream() {
-    fireRepo.settingStream.listen((event) {
+    settingRepo.settingStream.listen((event) {
       if (event == null) {
         setting = Setting.empty();
       } else {
@@ -35,6 +32,6 @@ class SettingController extends GetxController {
   }
 
   Future updateSetting(Setting newSetting) async {
-    await fireRepo.updateSetting(newSetting.toMap());
+    await settingRepo.updateSetting(newSetting.toMap());
   }
 }

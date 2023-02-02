@@ -20,6 +20,7 @@ class NotifyController extends GetxController {
     notifyRepo.notifyStream().listen((event) {
       final newNotify = Notify.fromMap(event);
       if (notify != newNotify) {
+        notify = newNotify;
         update();
       }
     });

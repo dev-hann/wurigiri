@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
-import 'package:wurigiri/controller/setting_controller.dart';
+import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
-import 'package:wurigiri/widget/w_loading.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -41,7 +40,7 @@ class _HomeViewState extends State<HomeView> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Badge(
-              label: Text("${notify.feed}"),
+              isLabelVisible: notify.feed,
               child: GestureDetector(
                 onTap: () {
                   Get.to(const FeedView());
@@ -51,20 +50,16 @@ class _HomeViewState extends State<HomeView> {
             ),
             GestureDetector(
               onTap: () {
-                controller.updateNotofy(
-                  notify.copyWith(
-                    chat: notify.chat + 1,
-                  ),
-                );
+                Get.to(ChatView());
               },
-              child: Badge(
-                label: Text("${notify.feed}"),
+              child: Badge.count(
+                count: notify.chat,
                 child: const Icon(Icons.chat),
               ),
             ),
             GestureDetector(
               onTap: () {},
-              child: Icon(Icons.settings),
+              child: const Icon(Icons.settings),
             ),
           ],
         );
@@ -77,17 +72,12 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: appBar(),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           dDayText(),
+          SizedBox(height: 16.0),
           icons(),
-          GetBuilder<SettingController>(
-            builder: (controller) {
-              if (controller.isLoading) {
-                return const WLoading();
-              }
-              return Text(controller.setting!.toMap().toString());
-            },
-          ),
+          SizedBox(height: 16.0),
         ],
       ),
     );

@@ -29,7 +29,25 @@ class FireService {
     }
   }
 
-  Future get({
+  Future remove({
+    required String collection,
+    required String document,
+  }) async {
+    try {
+      return _ref(collection, document).delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getDocumentList(String collection) async {
+    final snapshot = await _firestore.collection(collection).get();
+    return snapshot.docs.map((e) {
+      return e.data();
+    }).toList();
+  }
+
+  Future getDocument({
     required String collection,
     required String document,
   }) async {
