@@ -6,7 +6,7 @@ class Feed extends Equatable with Comparable<Feed> {
     required this.title,
     required this.desc,
   });
-  int get index => dateTime.millisecondsSinceEpoch;
+  String get index => dateTime.millisecondsSinceEpoch.toString();
   final DateTime dateTime;
   final String title;
   final String desc;

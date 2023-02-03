@@ -2,12 +2,12 @@ import 'package:equatable/equatable.dart';
 
 class User extends Equatable {
   const User({
-    this.shareIndex = "",
+    this.publicID = "",
     required this.id,
     required this.name,
     required this.headPhoto,
   });
-  final String shareIndex;
+  final String publicID;
   final String id;
   final String name;
   final String headPhoto;
@@ -15,7 +15,7 @@ class User extends Equatable {
   factory User.fromMap(dynamic map) {
     final data = Map<String, dynamic>.from(map);
     return User(
-      shareIndex: data["shareIndex"],
+      publicID: data["publicID"],
       id: data["id"],
       name: data["name"],
       headPhoto: data["headPhoto"],
@@ -24,7 +24,7 @@ class User extends Equatable {
 
   @override
   List<Object?> get props => [
-        shareIndex,
+        publicID,
         id,
         name,
         headPhoto,
@@ -32,10 +32,24 @@ class User extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      "shareIndex": shareIndex,
+      "publicID": publicID,
       "id": id,
       "name": name,
       "headPhoto": headPhoto,
     };
+  }
+
+  User copyWith({
+    String? publicID,
+    String? id,
+    String? name,
+    String? headPhoto,
+  }) {
+    return User(
+      publicID: publicID ?? this.publicID,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      headPhoto: headPhoto ?? this.headPhoto,
+    );
   }
 }

@@ -20,6 +20,10 @@ dependencies:
   firebase_core:
   cloud_firestore:
 
+  # LocalDB
+  hive_flutter:
+  hive: 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+@Deprecated("will be deprecated. use firestore")
 class FireService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -10,14 +11,32 @@ class FireService {
     return _firestore.collection(collection).doc(document);
   }
 
-  Stream<DocumentSnapshot> stream({
+  Stream<Map<String, dynamic>> stream({
     required String collection,
     required String document,
   }) {
-    return _ref(collection, document).snapshots();
+    return _ref(collection, document).snapshots().map((event) {
+      final data = event.data();
+      if (data == null) {
+        return {};
+      }
+      return data as Map<String, dynamic>;
+    });
   }
 
   Future update({
+    required String collection,
+    required String document,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      return _ref(collection, document).update(data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future set({
     required String collection,
     required String document,
     required Map<String, dynamic> data,
@@ -40,11 +59,11 @@ class FireService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getDocumentList(String collection) async {
+  Future<List<QueryDocumentSnapshot>> getDocumentList(
+    String collection,
+  ) async {
     final snapshot = await _firestore.collection(collection).get();
-    return snapshot.docs.map((e) {
-      return e.data();
-    }).toList();
+    return snapshot.docs;
   }
 
   Future getDocument({

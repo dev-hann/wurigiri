@@ -10,10 +10,11 @@ abstract class LoginRepo {
 
   String inviteCode();
   Stream<Map<String, dynamic>> connectStream(String inviteCode);
-  Future invite({
+  Future updateConnection({
     required String inviteCode,
     required Map<String, dynamic> data,
   });
+  Future<dynamic> requestConnection(String inviteCode);
 
-  Future cancelInvite(String inviteCode);
+  Future disposeInvite(String inviteCode);
 }

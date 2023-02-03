@@ -1,30 +1,38 @@
 part of feed_repo;
 
 class FeedImpl extends FeedRepo {
-  final FireService service = FireService();
-  final String feedKey = "feed";
-  @override
-  Future removeFeed(int index) {
-    return service.remove(
-      collection: feedKey,
-      document: "$index",
-    );
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String feedCollection = "feed";
+
+  CollectionReference get collection => _firestore.collection(feedCollection);
+
+  DocumentReference document(String document) {
+    return collection.doc(document);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> requestFeedList(int page) async {
-    return await service.getDocumentList(feedKey);
+  Future init() async {}
+  @override
+  Future removeFeed(String index) {
+    return document(index).delete();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> requestFeedList(
+      List<String> feedIndexList) async {
+    final snapshot =
+        await collection.where("index", whereIn: feedIndexList).get();
+    return snapshot.docs
+        .where((element) => feedIndexList.contains(element.id))
+        .map((e) => e.data() as Map<String, dynamic>)
+        .toList();
   }
 
   @override
   Future updateFeed({
-    required int index,
+    required String index,
     required Map<String, dynamic> data,
   }) {
-    return service.update(
-      collection: feedKey,
-      document: "$index",
-      data: data,
-    );
+    return document(index).set(data);
   }
 }

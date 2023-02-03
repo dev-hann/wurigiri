@@ -1,12 +1,17 @@
 part of chat_repo;
 
 class ChatImpl extends ChatRepo {
-  final FireService service = FireService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  final String chatCollection = "chat";
+  CollectionReference get collection => _firestore.collection(chatCollection);
+
+  DocumentReference document(String document) {
+    return collection.doc(document);
+  }
 
   final List<Map<String, dynamic>> _tmpChatList = [];
   final StreamController _chatStream = StreamController.broadcast();
-
-  final String chatKey = "chat";
 
   @override
   Stream<Map<String, dynamic>> chatStream() {
@@ -22,7 +27,8 @@ class ChatImpl extends ChatRepo {
 
   @override
   Future<List<Map<String, dynamic>>> requestChatList() async {
-    return await service.getDocumentList(chatKey);
+    final snapshot = await collection.get();
+    return snapshot.docs.map((e) => e.data() as Map<String, dynamic>).toList();
   }
 
   @override

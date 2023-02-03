@@ -15,17 +15,10 @@ class LoginImpl extends LoginRepo {
 
   @override
   Stream<Map<String, dynamic>> connectStream(String inviteCode) {
-    final snapshot = service.stream(
+    return service.stream(
       collection: connectCollection,
       document: inviteCode,
     );
-    return snapshot.map((event) {
-      final data = event.data();
-      if (data == null) {
-        return {};
-      }
-      return data as Map<String, dynamic>;
-    });
   }
 
   @override
@@ -34,11 +27,11 @@ class LoginImpl extends LoginRepo {
   }
 
   @override
-  Future invite({
+  Future updateConnection({
     required String inviteCode,
     required Map<String, dynamic> data,
   }) async {
-    service.update(
+    service.set(
       collection: connectCollection,
       document: inviteCode,
       data: data,
@@ -46,8 +39,16 @@ class LoginImpl extends LoginRepo {
   }
 
   @override
-  Future cancelInvite(String inviteCode) {
+  Future disposeInvite(String inviteCode) {
     return service.remove(
+      collection: connectCollection,
+      document: inviteCode,
+    );
+  }
+
+  @override
+  Future requestConnection(String inviteCode) {
+    return service.getDocument(
       collection: connectCollection,
       document: inviteCode,
     );

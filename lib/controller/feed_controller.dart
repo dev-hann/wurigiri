@@ -1,22 +1,36 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/feed.dart';
 import 'package:wurigiri/repo/feed/feed_repo.dart';
 
-class FeedController extends GetxController {
-  FeedController(this.feedRepo);
+class FeedController extends Controller<FeedRepo> {
+  FeedController(super.repo);
 
   static FeedController find() => Get.find<FeedController>();
 
-  final FeedRepo feedRepo;
   final List<Feed> feedList = [];
-  int _currentPage = 0;
-  void clearFeedList() {
+  final List<String> feedIndexList = [];
+
+  int _currentPage = 1;
+  Future refreshFeedList([List<String>? feedIndexList]) async {
+    _currentPage = 1;
     feedList.clear();
-    _currentPage = 0;
+    if (feedIndexList != null) {
+      this.feedIndexList.clear();
+      this.feedIndexList.addAll(feedIndexList);
+    }
+    requestFeedList();
   }
 
   Future requestFeedList() async {
-    final listData = await feedRepo.requestFeedList(_currentPage);
+    final listData = await repo.requestFeedList(
+      feedIndexList.sublist(
+        0,
+        min(_currentPage * 21, feedIndexList.length),
+      ),
+    );
     final list = listData.map((e) {
       return Feed.fromMap(e);
     }).toList();
@@ -26,18 +40,23 @@ class FeedController extends GetxController {
     _currentPage++;
   }
 
-  Future updateFeed(Feed newFeed) {
+  Future updateFeed({
+    required Feed newFeed,
+  }) {
     feedList.add(newFeed);
+    feedList.sort();
+    feedIndexList.add(newFeed.index);
     update();
-    return feedRepo.updateFeed(
+    return repo.updateFeed(
       index: newFeed.index,
       data: newFeed.toMap(),
     );
   }
 
-  Future removeFeed(int feedIndex) async {
+  Future removeFeed(String feedIndex) async {
     feedList.removeWhere((element) => element.index == feedIndex);
     update();
-    return feedRepo.removeFeed(feedIndex);
+    feedIndexList.removeWhere((element) => element == feedIndex);
+    return repo.removeFeed(feedIndex);
   }
 }

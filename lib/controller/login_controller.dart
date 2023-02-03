@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:wurigiri/model/user.dart';
+import 'package:wurigiri/model/connection.dart';
 import 'package:wurigiri/repo/login/login_repo.dart';
 
 class LoginController extends GetxController {
@@ -15,35 +15,49 @@ class LoginController extends GetxController {
     return loginRepo.loadDeviceID();
   }
 
+  StreamSubscription? _inviteSub;
   void _initConnectStream(String inviteCode) {
     _inviteSub = loginRepo.connectStream(inviteCode).listen((event) {
-      final user = User.fromMap(event);
-      if (user.shareIndex.isNotEmpty) {
-        print(user);
+      if (event.isEmpty) {
+        return;
+      }
+      final connection = Connection.fromMap(event);
+      if (connection.guest && connection.invitator) {
+        _inviteSub?.cancel();
         cancelInvite(inviteCode);
-        Get.back();
+        if (Get.isDialogOpen ?? false) {
+          Get.back(result: inviteCode);
+        }
       }
     });
   }
 
-  StreamSubscription? _inviteSub;
-  Future<String> invite(User newUser) async {
+  Future cancelInvite(String inviteCode) {
+    return loginRepo.disposeInvite(inviteCode);
+  }
+
+  Future<String> invite() async {
     final inviteCode = loginRepo.inviteCode();
-    await loginRepo.invite(
-      inviteCode: inviteCode,
-      data: newUser.toMap(),
-    );
     _initConnectStream(inviteCode);
+    await loginRepo.updateConnection(
+      inviteCode: inviteCode,
+      data: const Connection(
+        invitator: true,
+        guest: false,
+      ).toMap(),
+    );
     return inviteCode;
   }
 
-  Future cancelInvite(String inviteCode) {
-    _inviteSub?.cancel();
-    return loginRepo.cancelInvite(inviteCode);
+  Future connect(String inviteCode) async {
+    final connectionData = await loginRepo.requestConnection(inviteCode);
+    if (connectionData == null) {
+      return;
+    }
+    final connection = Connection.fromMap(connectionData);
+    await loginRepo.updateConnection(
+      inviteCode: inviteCode,
+      data: connection.copyWith(guest: true).toMap(),
+    );
   }
-
-  Future connect({
-    required String otherInviteCode,
-    required User newUser,
-  }) async {}
 }

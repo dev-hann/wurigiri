@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/login_controller.dart';
+import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/user.dart';
-import 'package:wurigiri/repo/login/login_repo.dart';
 import 'package:wurigiri/view/login_view/connect_view.dart';
 
 class Loginview extends StatelessWidget {
   Loginview({super.key});
-  final loginController = Get.put(LoginController(LoginImpl()));
-
+  final loginController = LoginController.find();
+  final userController = UserController.find();
   final idController = TextEditingController();
 
   AppBar appBar() {
@@ -34,9 +34,8 @@ class Loginview extends StatelessWidget {
                 headPhoto: '',
                 name: idController.text,
               );
-              Get.to(
-                ConnectView(tmpUser: newUser),
-              );
+              await userController.updateUser(newUser, withServer: true);
+              Get.to(ConnectView());
             },
             child: const Text("ok"),
           ),

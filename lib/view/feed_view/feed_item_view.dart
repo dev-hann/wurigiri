@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:wurigiri/model/feed.dart';
 
 class FeedItemView extends StatelessWidget {
@@ -9,7 +8,7 @@ class FeedItemView extends StatelessWidget {
     required this.onTapRemove,
   });
   final Feed feed;
-  final Function(int index) onTapRemove;
+  final Function(String index) onTapRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class FeedItemView extends StatelessWidget {
                   onPressed: () {
                     onTapRemove(feed.index);
                   },
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                 )
               ],
             ),

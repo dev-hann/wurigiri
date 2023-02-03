@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/consts/const.dart';
+import 'package:wurigiri/controller/chat_controller.dart';
+import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
+import 'package:wurigiri/controller/public_controller.dart';
+import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/repo/chat/chat_repo.dart';
+import 'package:wurigiri/repo/feed/feed_repo.dart';
+import 'package:wurigiri/repo/notify/notify_repo.dart';
+import 'package:wurigiri/repo/public/public_repo.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
 
@@ -21,6 +29,17 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  @override
+  void initState() {
+    super.initState();
+    final userController = UserController.find();
+    final publicID = userController.publicID;
+    Get.put(PublicController(PublicImpl(publicID)));
+    Get.put(FeedController(FeedImpl()));
+    Get.put(NotifyController(NotifyImpl()));
+    Get.put(ChatController(ChatImpl()));
+  }
+
   AppBar appBar() {
     return AppBar(
       title: const Text("title"),

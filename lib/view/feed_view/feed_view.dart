@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
+import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view.dart';
 import 'package:wurigiri/view/feed_view/feed_item_view.dart';
 import 'package:wurigiri/widget/w_loading.dart';
@@ -14,12 +15,14 @@ class FeedView extends StatefulWidget {
 
 class _FeedViewState extends State<FeedView> {
   final feedController = FeedController.find();
+  final publicController = PublicController.find();
 
   @override
   void initState() {
     super.initState();
-    feedController.clearFeedList();
-    feedController.requestFeedList();
+    feedController.refreshFeedList(
+      publicController.public.feedList,
+    );
   }
 
   AppBar appBar() {
@@ -32,7 +35,13 @@ class _FeedViewState extends State<FeedView> {
             if (newFeed == null) {
               return;
             }
-            feedController.updateFeed(newFeed);
+            await feedController.updateFeed(
+              newFeed: newFeed,
+            );
+            final newPublic = publicController.public.copyWith(
+              feedList: feedController.feedIndexList,
+            );
+            publicController.updatePublic(newPublic);
           },
           icon: const Icon(Icons.edit),
         ),
@@ -56,6 +65,10 @@ class _FeedViewState extends State<FeedView> {
               feed: list[index],
               onTapRemove: (feedIndex) {
                 feedController.removeFeed(feedIndex);
+                final newPublic = publicController.public.copyWith(
+                  feedList: feedController.feedIndexList,
+                );
+                publicController.updatePublic(newPublic);
               },
             );
           },

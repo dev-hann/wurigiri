@@ -1,7 +1,9 @@
 library chat_repo;
 
 import 'dart:async';
+import 'dart:ffi';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wurigiri/data/service.dart';
 
 part './chat_impl.dart';
