@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/login_controller.dart';
-import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/view/home_view.dart';
 import 'package:wurigiri/widget/w_loading.dart';
@@ -13,8 +12,6 @@ class ConnectView extends StatelessWidget {
 
   final userController = UserController.find();
   final loginController = LoginController.find();
-  final publicController = PublicController.find();
-
   final codeController = TextEditingController();
 
   Future updateUser(String inviteCode) async {
@@ -90,7 +87,7 @@ class ConnectView extends StatelessWidget {
                   );
                   if (inviteCode != null) {
                     await updateUser(inviteCode);
-                    await publicController.connected(inviteCode);
+                    await loginController.connected(inviteCode);
                     Get.to(const HomeView());
                   }
                 },

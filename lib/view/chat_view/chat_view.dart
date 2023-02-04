@@ -19,7 +19,7 @@ class _ChatViewState extends State<ChatView> {
   @override
   void initState() {
     super.initState();
-    chatController.loadChatList();
+    chatController.refreshChatList();
   }
 
   AppBar appBar() {
@@ -39,7 +39,7 @@ class _ChatViewState extends State<ChatView> {
         IconButton(
           onPressed: () {
             final newChat = TextChat(
-              senderIndex: userController.user.id + "1",
+              senderIndex: userController.user.id,
               dateTime: DateTime.now(),
               text: textChatController.text,
             );
@@ -70,7 +70,9 @@ class _ChatViewState extends State<ChatView> {
               reverse: true,
               itemCount: chatList.length,
               itemBuilder: (context, index) {
+                final chat = chatList[index];
                 return ChatItemView(
+                  key: ValueKey(chat.index),
                   chat: chatList[index],
                 );
               },

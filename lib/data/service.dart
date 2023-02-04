@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-@Deprecated("will be deprecated. use firestore")
-class FireService {
+class Service {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   DocumentReference _ref(
@@ -9,6 +8,18 @@ class FireService {
     String document,
   ) {
     return _firestore.collection(collection).doc(document);
+  }
+
+  DocumentReference publicRef(String publicID) {
+    return _ref("public", publicID);
+  }
+
+  CollectionReference feedRef(String publicID) {
+    return publicRef(publicID).collection("feed");
+  }
+
+  CollectionReference chatRef(String publicID) {
+    return publicRef(publicID).collection("chat");
   }
 
   Stream<Map<String, dynamic>> stream({

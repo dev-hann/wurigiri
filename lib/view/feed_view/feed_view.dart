@@ -20,9 +20,7 @@ class _FeedViewState extends State<FeedView> {
   @override
   void initState() {
     super.initState();
-    feedController.refreshFeedList(
-      publicController.public.feedList,
-    );
+    feedController.refreshFeedList();
   }
 
   AppBar appBar() {
@@ -38,10 +36,6 @@ class _FeedViewState extends State<FeedView> {
             await feedController.updateFeed(
               newFeed: newFeed,
             );
-            final newPublic = publicController.public.copyWith(
-              feedList: feedController.feedIndexList,
-            );
-            publicController.updatePublic(newPublic);
           },
           icon: const Icon(Icons.edit),
         ),
@@ -65,10 +59,6 @@ class _FeedViewState extends State<FeedView> {
               feed: list[index],
               onTapRemove: (feedIndex) {
                 feedController.removeFeed(feedIndex);
-                final newPublic = publicController.public.copyWith(
-                  feedList: feedController.feedIndexList,
-                );
-                publicController.updatePublic(newPublic);
               },
             );
           },

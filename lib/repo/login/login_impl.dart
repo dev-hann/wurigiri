@@ -1,7 +1,7 @@
 part of login_repo;
 
 class LoginImpl extends LoginRepo {
-  final FireService service = FireService();
+  final Service service = Service();
   final String connectCollection = "connect";
 
   @override
@@ -52,5 +52,10 @@ class LoginImpl extends LoginRepo {
       collection: connectCollection,
       document: inviteCode,
     );
+  }
+
+  @override
+  Future connected(String inviteCode, Map<String, dynamic> data) {
+    return service.publicRef(inviteCode).set(data);
   }
 }

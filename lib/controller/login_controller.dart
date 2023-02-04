@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:wurigiri/model/connection.dart';
+import 'package:wurigiri/model/public.dart';
 import 'package:wurigiri/repo/login/login_repo.dart';
 
 class LoginController extends GetxController {
@@ -58,6 +59,13 @@ class LoginController extends GetxController {
     await loginRepo.updateConnection(
       inviteCode: inviteCode,
       data: connection.copyWith(guest: true).toMap(),
+    );
+  }
+
+  Future connected(inviteCode) {
+    return loginRepo.connected(
+      inviteCode,
+      Public.empty().toMap(),
     );
   }
 }

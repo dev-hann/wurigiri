@@ -1,31 +1,21 @@
 part of feed_repo;
 
 class FeedImpl extends FeedRepo {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String feedCollection = "feed";
-
-  CollectionReference get collection => _firestore.collection(feedCollection);
-
-  DocumentReference document(String document) {
-    return collection.doc(document);
-  }
+  FeedImpl(this.publicID);
+  final String publicID;
+  final Service service = Service();
 
   @override
   Future init() async {}
   @override
   Future removeFeed(String index) {
-    return document(index).delete();
+    return service.feedRef(publicID).doc(index).delete();
   }
 
   @override
-  Future<List<Map<String, dynamic>>> requestFeedList(
-      List<String> feedIndexList) async {
-    final snapshot =
-        await collection.where("index", whereIn: feedIndexList).get();
-    return snapshot.docs
-        .where((element) => feedIndexList.contains(element.id))
-        .map((e) => e.data() as Map<String, dynamic>)
-        .toList();
+  Future<List<Map<String, dynamic>>> requestFeedList() async {
+    final snapshot = await service.feedRef(publicID).get();
+    return snapshot.docs.map((e) => e.data() as Map<String, dynamic>).toList();
   }
 
   @override
@@ -33,6 +23,6 @@ class FeedImpl extends FeedRepo {
     required String index,
     required Map<String, dynamic> data,
   }) {
-    return document(index).set(data);
+    return service.feedRef(publicID).doc(index).set(data);
   }
 }

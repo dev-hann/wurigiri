@@ -33,11 +33,4 @@ class PublicController extends GetxController {
   Future updatePublic(Public newPublic) async {
     await publicRepo.updatePublic(newPublic.toMap());
   }
-
-  Future connected(String inviteCode) {
-    return publicRepo.connected(
-      inviteCode,
-      Public.empty().toMap(),
-    );
-  }
 }

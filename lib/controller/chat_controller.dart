@@ -1,14 +1,12 @@
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
 import 'package:wurigiri/repo/chat/chat_repo.dart';
 
-class ChatController extends GetxController {
-  ChatController(this.chatRepo);
+class ChatController extends Controller<ChatRepo> {
+  ChatController(super.repo);
 
   static ChatController find() => Get.find<ChatController>();
-
-  final ChatRepo chatRepo;
-
   final List<Chat> chatList = [];
 
   @override
@@ -18,17 +16,35 @@ class ChatController extends GetxController {
   }
 
   void _initChatStream() {
-    chatRepo.chatStream().listen((event) {
+    repo.chatStream().listen((event) {
       final newChat = Chat.fromMap(event);
-      chatList.add(newChat);
+      final index =
+          chatList.indexWhere((element) => newChat.index == element.index);
+      if (index == -1) {
+        chatList.add(newChat);
+      } else {
+        chatList[index] = newChat;
+      }
       update();
     });
   }
 
-  Future loadChatList() async {}
+  int _currentPage = 1;
+  void refreshChatList() {
+    _currentPage = 1;
+    chatList.clear();
+    loadChatList();
+  }
+
+  void loadChatList() {
+    final list = repo.loadChatList(1);
+    chatList.addAll(list.map((e) => Chat.fromMap(e)));
+    _currentPage++;
+  }
+
   Future requestChatList() async {}
   Future updateChat(Chat chat) async {
-    chatRepo.updateChat(
+    repo.updateChat(
       "${chat.index}",
       chat.toMap(),
     );

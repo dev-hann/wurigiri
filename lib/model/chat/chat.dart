@@ -28,7 +28,7 @@ abstract class Chat extends Equatable with Comparable<Chat> {
 
   Map<String, dynamic> toMap();
 
-  static fromMap(dynamic map) {
+  static Chat fromMap(dynamic map) {
     final typeIndex = map["typeIndex"];
     final type = ChatType.values[typeIndex];
     switch (type) {

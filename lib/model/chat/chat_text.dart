@@ -14,6 +14,7 @@ class TextChat extends Chat {
   final String text;
   @override
   List<Object?> get props => [
+        index,
         dateTime,
         senderIndex,
         text,

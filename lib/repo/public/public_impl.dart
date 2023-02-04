@@ -27,9 +27,4 @@ class PublicImpl extends PublicRepo {
   Future updatePublic(Map<String, dynamic> data) {
     return document(publicID).set(data);
   }
-
-  @override
-  Future connected(String inviteCode, Map<String, dynamic> data) {
-    return document(inviteCode).set(data);
-  }
 }

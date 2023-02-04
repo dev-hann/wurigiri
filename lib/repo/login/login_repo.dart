@@ -17,4 +17,6 @@ abstract class LoginRepo {
   Future<dynamic> requestConnection(String inviteCode);
 
   Future disposeInvite(String inviteCode);
+
+  Future connected(String inviteCode, Map<String, dynamic> data);
 }

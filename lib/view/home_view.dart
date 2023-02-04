@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
@@ -34,10 +35,10 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     final userController = UserController.find();
     final publicID = userController.publicID;
+    Controller.put(ChatController(ChatImpl(publicID)));
     Get.put(PublicController(PublicImpl(publicID)));
-    Get.put(FeedController(FeedImpl()));
+    Get.put(FeedController(FeedImpl(publicID)));
     Get.put(NotifyController(NotifyImpl()));
-    Get.put(ChatController(ChatImpl()));
   }
 
   AppBar appBar() {

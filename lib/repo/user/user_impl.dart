@@ -1,7 +1,7 @@
 part of user_repo;
 
 class UserImpl extends UserRepo {
-  final FireService service = FireService();
+  final Service service = Service();
   final String userCollection = "user";
 
   @override
