@@ -22,6 +22,10 @@ class Service {
     return publicRef(publicID).collection("chat");
   }
 
+  CollectionReference userRef() {
+    return _firestore.collection("user");
+  }
+
   Stream<Map<String, dynamic>> stream({
     required String collection,
     required String document,

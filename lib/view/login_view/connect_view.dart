@@ -15,7 +15,11 @@ class ConnectView extends StatelessWidget {
   final codeController = TextEditingController();
 
   Future updateUser(String inviteCode) async {
-    final newUser = userController.user.copyWith(publicID: inviteCode);
+    final newUser = userController.user.copyWith(
+      // TODO: Update OtherID.
+      // when connect each other, pass own userData.
+      publicID: inviteCode,
+    );
     await userController.updateUser(newUser, withServer: true);
   }
 

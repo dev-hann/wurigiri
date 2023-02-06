@@ -35,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     final userController = UserController.find();
     final publicID = userController.publicID;
+    userController.requestUser();
     Controller.put(ChatController(ChatImpl(publicID)));
     Get.put(PublicController(PublicImpl(publicID)));
     Get.put(FeedController(FeedImpl(publicID)));

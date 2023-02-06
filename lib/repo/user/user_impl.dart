@@ -8,26 +8,16 @@ class UserImpl extends UserRepo {
   Future init() async {}
 
   @override
-  Future requestUser(String deviceID) async {
-    try {
-      return service.getDocument(
-        collection: userCollection,
-        document: deviceID,
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
   Future updateUser({
     required String id,
     required Map<String, dynamic> data,
   }) async {
-    await service.set(
-      collection: userCollection,
-      document: id,
-      data: data,
-    );
+    await service.userRef().doc(id).set(data);
+  }
+
+  @override
+  Future requestUser(String deviceID) async {
+    final snapshot = await service.userRef().doc(deviceID).get();
+    return snapshot.data() as Map<String, dynamic>;
   }
 }
