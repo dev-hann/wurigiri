@@ -18,6 +18,10 @@ class UserImpl extends UserRepo {
   @override
   Future requestUser(String deviceID) async {
     final snapshot = await service.userRef().doc(deviceID).get();
+    final data = snapshot.data();
+    if (data == null) {
+      return null;
+    }
     return snapshot.data() as Map<String, dynamic>;
   }
 }

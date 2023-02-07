@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/model/connection.dart';
 import 'package:wurigiri/view/home_view.dart';
 import 'package:wurigiri/widget/w_loading.dart';
 
@@ -13,15 +14,6 @@ class ConnectView extends StatelessWidget {
   final userController = UserController.find();
   final loginController = LoginController.find();
   final codeController = TextEditingController();
-
-  Future updateUser(String inviteCode) async {
-    final newUser = userController.user.copyWith(
-      // TODO: Update OtherID.
-      // when connect each other, pass own userData.
-      publicID: inviteCode,
-    );
-    await userController.updateUser(newUser, withServer: true);
-  }
 
   AppBar appBar() {
     return AppBar(
@@ -77,21 +69,39 @@ class ConnectView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   final inviteCode = codeController.text;
-                  await loginController.connect(inviteCode);
-                  await updateUser(inviteCode);
+                  final connection = await loginController.connect(inviteCode);
+                  if (connection == null) {
+                    return;
+                  }
+                  final newUser = userController.user.copyWith(
+                    publicID: inviteCode,
+                    otherID: connection.invitator,
+                  );
+                  await userController.updateUser(
+                    newUser,
+                    withServer: true,
+                  );
                   Get.to(const HomeView());
                 },
                 child: const Text("Connect"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  final inviteCode = await Get.dialog(
+                  final res = await Get.dialog(
                     inviteAlert(),
                     barrierDismissible: false,
                   );
-                  if (inviteCode != null) {
-                    await updateUser(inviteCode);
-                    await loginController.connected(inviteCode);
+                  if (res != null) {
+                    final connection = res as Connection;
+                    final newUser = userController.user.copyWith(
+                      publicID: connection.publicID,
+                      otherID: connection.guest,
+                    );
+                    await userController.updateUser(
+                      newUser,
+                      withServer: true,
+                    );
+                    await loginController.connected(connection.publicID);
                     Get.to(const HomeView());
                   }
                 },

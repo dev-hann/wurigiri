@@ -23,11 +23,11 @@ class LoginController extends GetxController {
         return;
       }
       final connection = Connection.fromMap(event);
-      if (connection.guest && connection.invitator) {
+      if (connection.guest.isNotEmpty && connection.invitator.isNotEmpty) {
         _inviteSub?.cancel();
         cancelInvite(inviteCode);
         if (Get.isDialogOpen ?? false) {
-          Get.back(result: inviteCode);
+          Get.back(result: connection);
         }
       }
     });
@@ -42,24 +42,30 @@ class LoginController extends GetxController {
     _initConnectStream(inviteCode);
     await loginRepo.updateConnection(
       inviteCode: inviteCode,
-      data: const Connection(
-        invitator: true,
-        guest: false,
+      data: Connection(
+        publicID: inviteCode,
+        invitator: await loadDeviceID(),
+        guest: "",
       ).toMap(),
     );
     return inviteCode;
   }
 
-  Future connect(String inviteCode) async {
+  Future<Connection?> connect(String inviteCode) async {
     final connectionData = await loginRepo.requestConnection(inviteCode);
     if (connectionData == null) {
-      return;
+      return null;
     }
     final connection = Connection.fromMap(connectionData);
     await loginRepo.updateConnection(
       inviteCode: inviteCode,
-      data: connection.copyWith(guest: true).toMap(),
+      data: connection
+          .copyWith(
+            guest: await loadDeviceID(),
+          )
+          .toMap(),
     );
+    return connection;
   }
 
   Future connected(inviteCode) {
