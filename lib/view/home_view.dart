@@ -6,13 +6,17 @@ import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
+import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/repo/chat/chat_repo.dart';
 import 'package:wurigiri/repo/feed/feed_repo.dart';
 import 'package:wurigiri/repo/notify/notify_repo.dart';
 import 'package:wurigiri/repo/public/public_repo.dart';
+import 'package:wurigiri/repo/file/file_repo.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
+import 'package:wurigiri/view/setting_view/setting_view.dart';
+import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -35,7 +39,9 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     final userController = UserController.find();
     final publicID = userController.publicID;
+    userController.reqeustOther();
     Controller.put(ChatController(ChatImpl(publicID)));
+    Controller.put(FileController(FileImpl()));
     Get.put(PublicController(PublicImpl(publicID)));
     Get.put(FeedController(FeedImpl(publicID)));
     Get.put(NotifyController(NotifyImpl()));
@@ -49,41 +55,39 @@ class _HomeViewState extends State<HomeView> {
 
   Widget dDayText() {
     final inDays = DateTime.now().difference(firstMeet).inDays;
-    return Text("$inDays");
+    return GestureDetector(
+      onTap: () {
+        Get.to(
+          UserDetailView(user: UserController.find().user),
+        );
+      },
+      child: Text("$inDays"),
+    );
   }
 
   Widget icons() {
-    return GetBuilder<NotifyController>(
-      builder: (controller) {
-        final notify = controller.notify;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Badge(
-              isLabelVisible: notify.feed,
-              child: GestureDetector(
-                onTap: () {
-                  Get.to(const FeedView());
-                },
-                child: const Icon(Icons.history),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Get.to(ChatView());
-              },
-              child: Badge.count(
-                count: notify.chat,
-                child: const Icon(Icons.chat),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: const Icon(Icons.settings),
-            ),
-          ],
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Get.to(const FeedView());
+          },
+          child: const Icon(Icons.history),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(const ChatView());
+          },
+          child: const Icon(Icons.chat),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(const SettingView());
+          },
+          child: const Icon(Icons.settings),
+        ),
+      ],
     );
   }
 
@@ -95,9 +99,9 @@ class _HomeViewState extends State<HomeView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           dDayText(),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           icons(),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
         ],
       ),
     );

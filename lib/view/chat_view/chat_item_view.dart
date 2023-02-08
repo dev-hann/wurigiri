@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
+import 'package:wurigiri/model/user.dart';
 
 class ChatItemView extends StatelessWidget {
   ChatItemView({
     super.key,
+    required this.sender,
     required this.chat,
+    required this.isRead,
   });
+  final User sender;
   final Chat chat;
+  final bool isRead;
   final userController = UserController.find();
 
   bool get isMine => userController.user.id == chat.senderIndex;
@@ -33,9 +38,21 @@ class ChatItemView extends StatelessWidget {
     }
   }
 
+  Widget readText() {
+    if (!isMine) {
+      return const SizedBox();
+    }
+    return Text(isRead ? "Read" : "");
+  }
+
   Widget tailing() {
     final data = chat.dateTime;
-    return Text("${data.hour}:${data.minute}");
+    return Column(
+      children: [
+        readText(),
+        Text("${data.hour}:${data.minute}"),
+      ],
+    );
   }
 
   @override

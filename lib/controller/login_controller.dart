@@ -19,7 +19,7 @@ class LoginController extends GetxController {
   StreamSubscription? _inviteSub;
   void _initConnectStream(String inviteCode) {
     _inviteSub = loginRepo.connectStream(inviteCode).listen((event) {
-      if (event.isEmpty) {
+      if (event == null) {
         return;
       }
       final connection = Connection.fromMap(event);

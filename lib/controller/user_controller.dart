@@ -14,6 +14,13 @@ class UserController extends Controller<UserRepo> {
   String get publicID => user.publicID;
   late User other;
 
+  Future reqeustOther() async {
+    final otherData = await requestUser(user.otherID);
+    if (otherData != null) {
+      other = otherData;
+    }
+  }
+
   Future<User?> requestUser(String deviceID) async {
     final userData = await repo.requestUser(deviceID);
     if (userData == null) {

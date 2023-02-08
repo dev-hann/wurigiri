@@ -13,16 +13,20 @@ dependencies:
   get:
 
   # Utils
-  platform_device_id: ^1.0.1
   equatable:
+  image_picker: ^0.8.6+1
+  platform_device_id: ^1.0.1
+  badges:
+  image_cropper: ^3.0.1
 
   # Firebase
   firebase_core:
   cloud_firestore:
+  firebase_storage: ^11.0.10
 
   # LocalDB
   hive_flutter:
-  hive: 
+  hive:
 
 dev_dependencies:
   flutter_test:

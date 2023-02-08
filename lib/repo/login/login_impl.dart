@@ -14,11 +14,14 @@ class LoginImpl extends LoginRepo {
   }
 
   @override
-  Stream<Map<String, dynamic>> connectStream(String inviteCode) {
-    return service.stream(
-      collection: connectCollection,
-      document: inviteCode,
-    );
+  Stream<Map<String, dynamic>?> connectStream(String inviteCode) {
+    return service.connectRef().doc(inviteCode).snapshots().map((event) {
+      final data = event.data();
+      if (data == null) {
+        return null;
+      }
+      return data as Map<String, dynamic>;
+    });
   }
 
   @override
@@ -30,28 +33,18 @@ class LoginImpl extends LoginRepo {
   Future updateConnection({
     required String inviteCode,
     required Map<String, dynamic> data,
-  }) async {
-    service.set(
-      collection: connectCollection,
-      document: inviteCode,
-      data: data,
-    );
+  }) {
+    return service.connectRef().doc(inviteCode).set(data);
   }
 
   @override
   Future disposeInvite(String inviteCode) {
-    return service.remove(
-      collection: connectCollection,
-      document: inviteCode,
-    );
+    return service.connectRef().doc(inviteCode).delete();
   }
 
   @override
   Future requestConnection(String inviteCode) {
-    return service.getDocument(
-      collection: connectCollection,
-      document: inviteCode,
-    );
+    return service.connectRef().doc(inviteCode).get();
   }
 
   @override

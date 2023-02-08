@@ -9,14 +9,16 @@ class ChatImpl extends ChatRepo {
   @override
   Future init() async {
     await chatDB.open();
-    _initStream();
+    await chatEnterDB.open();
+    _initChatStream();
+    _initChatEnterStream();
   }
 
-  bool _streanInited = false;
-  void _initStream() {
+  bool _chatStreanInited = false;
+  void _initChatStream() {
     service.chatRef(publicID).snapshots().listen((event) async {
-      if (!_streanInited) {
-        _streanInited = true;
+      if (!_chatStreanInited) {
+        _chatStreanInited = true;
         return;
       }
       final itemList = event.docChanges;
@@ -53,9 +55,29 @@ class ChatImpl extends ChatRepo {
     return service.chatRef(publicID).doc(index).set(data);
   }
 
+  // ChatEnter
+  final chatEnterDB = DataBase("chatEnter");
+  void _initChatEnterStream() {
+    service.chatEnterRef(publicID).snapshots().listen((event) async {
+      final itemList = event.docChanges;
+      for (final item in itemList) {
+        final index = item.doc.id;
+        final data = item.doc.data() as Map<String, dynamic>;
+        await chatEnterDB.update(index, data);
+      }
+    });
+  }
+
   @override
-  Future enterChatRoom(String userID) {
-    // TODO: implement enterChatRoom
-    throw UnimplementedError();
+  Stream<Map<String, dynamic>> chatRoomEnterStrem() {
+    return chatEnterDB.stream();
+  }
+
+  @override
+  Future enterChatRoom({
+    required String userID,
+    required Map<String, dynamic> data,
+  }) async {
+    return service.chatEnterRef(publicID).doc(userID).set(data);
   }
 }

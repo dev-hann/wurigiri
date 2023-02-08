@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
-import 'package:wurigiri/controller/user_controller.dart';
-import 'package:wurigiri/model/chat/chat.dart';
 import 'package:wurigiri/view/chat_view/chat_item_view.dart';
+import 'package:wurigiri/view/chat_view/chat_view_model.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -13,13 +12,19 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  final chatController = ChatController.find();
-  final userController = UserController.find();
+  final ChatViewModel viewModel = ChatViewModel();
+
   final TextEditingController textChatController = TextEditingController();
   @override
   void initState() {
     super.initState();
-    chatController.refreshChatList();
+    viewModel.init();
+  }
+
+  @override
+  void dispose() {
+    viewModel.dispose();
+    super.dispose();
   }
 
   AppBar appBar() {
@@ -37,13 +42,9 @@ class _ChatViewState extends State<ChatView> {
           ),
         ),
         IconButton(
-          onPressed: () {
-            final newChat = TextChat(
-              senderIndex: userController.user.id,
-              dateTime: DateTime.now(),
-              text: textChatController.text,
-            );
-            chatController.updateChat(newChat);
+          onPressed: () async {
+            viewModel.sendTextChat(textChatController.text);
+            textChatController.clear();
           },
           icon: const Icon(Icons.send),
         ),
@@ -62,7 +63,7 @@ class _ChatViewState extends State<ChatView> {
         bottomSheet: bottom(),
         body: GetBuilder<ChatController>(
           builder: (controller) {
-            final chatList = controller.chatList.reversed.toList();
+            final chatList = viewModel.chatList.reversed.toList();
             return ListView.builder(
               padding: const EdgeInsets.only(
                 bottom: kToolbarHeight,
@@ -73,7 +74,9 @@ class _ChatViewState extends State<ChatView> {
                 final chat = chatList[index];
                 return ChatItemView(
                   key: ValueKey(chat.index),
-                  chat: chatList[index],
+                  sender: viewModel.loadUser(chat.senderIndex),
+                  chat: chat,
+                  isRead: viewModel.isReadChat(chat),
                 );
               },
             );

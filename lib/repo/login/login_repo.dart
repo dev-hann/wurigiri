@@ -9,7 +9,7 @@ abstract class LoginRepo {
   Future<String> loadDeviceID();
 
   String inviteCode();
-  Stream<Map<String, dynamic>> connectStream(String inviteCode);
+  Stream<Map<String, dynamic>?> connectStream(String inviteCode);
   Future updateConnection({
     required String inviteCode,
     required Map<String, dynamic> data,
