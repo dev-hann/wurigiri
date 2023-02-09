@@ -30,7 +30,7 @@ class _UserDetailViewState extends State<UserDetailView> {
   }
 
   Widget headPhoto() {
-    return HeadPhoto(
+    return WHeadPhoto(
       viewModel.user.headPhoto,
       badge: GestureDetector(
         onTap: () async {

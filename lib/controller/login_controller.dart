@@ -1,24 +1,23 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/connection.dart';
 import 'package:wurigiri/model/public.dart';
 import 'package:wurigiri/repo/login/login_repo.dart';
 
-class LoginController extends GetxController {
-  LoginController(this.loginRepo);
+class LoginController extends Controller<LoginRepo> {
+  LoginController(super.repo);
 
   static LoginController find() => Get.find<LoginController>();
 
-  final LoginRepo loginRepo;
-
   Future<String> loadDeviceID() {
-    return loginRepo.loadDeviceID();
+    return repo.loadDeviceID();
   }
 
   StreamSubscription? _inviteSub;
   void _initConnectStream(String inviteCode) {
-    _inviteSub = loginRepo.connectStream(inviteCode).listen((event) {
+    _inviteSub = repo.connectStream(inviteCode).listen((event) {
       if (event == null) {
         return;
       }
@@ -34,13 +33,13 @@ class LoginController extends GetxController {
   }
 
   Future cancelInvite(String inviteCode) {
-    return loginRepo.disposeInvite(inviteCode);
+    return repo.disposeInvite(inviteCode);
   }
 
   Future<String> invite() async {
-    final inviteCode = loginRepo.inviteCode();
+    final inviteCode = repo.inviteCode();
     _initConnectStream(inviteCode);
-    await loginRepo.updateConnection(
+    await repo.updateConnection(
       inviteCode: inviteCode,
       data: Connection(
         publicID: inviteCode,
@@ -52,12 +51,12 @@ class LoginController extends GetxController {
   }
 
   Future<Connection?> connect(String inviteCode) async {
-    final connectionData = await loginRepo.requestConnection(inviteCode);
+    final connectionData = await repo.requestConnection(inviteCode);
     if (connectionData == null) {
       return null;
     }
     final connection = Connection.fromMap(connectionData);
-    await loginRepo.updateConnection(
+    await repo.updateConnection(
       inviteCode: inviteCode,
       data: connection
           .copyWith(
@@ -69,7 +68,7 @@ class LoginController extends GetxController {
   }
 
   Future connected(inviteCode) {
-    return loginRepo.connected(
+    return repo.connected(
       inviteCode,
       Public.empty().toMap(),
     );

@@ -2,16 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
+import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
 import 'package:wurigiri/model/chat/chat_room_enter.dart';
 import 'package:wurigiri/model/user.dart';
+import 'package:wurigiri/widget/image_picker.dart';
 
 class ChatViewModel {
   final chatController = ChatController.find();
   final userController = UserController.find();
+  final fileController = FileController.find();
 
   late String userID;
+
   void init() {
     userID = userController.user.id;
     _initChatStream();
@@ -27,27 +31,61 @@ class ChatViewModel {
 
   late StreamSubscription _chatSub;
   void _initChatStream() {
-    _chatSub = chatController.chatStream().listen((event) {
-      final newChat = Chat.fromMap(event);
-      final index =
-          chatList.indexWhere((element) => newChat.index == element.index);
-      if (index == -1) {
-        chatList.add(newChat);
-      } else {
-        chatList[index] = newChat;
-      }
-      chatController.enterChatRoom(userID);
-      chatController.update();
-    });
+    _chatSub = chatController.chatStream().listen(
+      (event) {
+        final newChat = Chat.fromMap(event);
+        final index =
+            chatList.indexWhere((element) => newChat.index == element.index);
+        if (index == -1) {
+          chatList.add(newChat);
+        } else {
+          chatList[index] = newChat;
+        }
+        chatController.enterChatRoom(userID);
+        chatController.update();
+      },
+    );
   }
 
-  void sendTextChat(String text) {
+  final TextEditingController textChatController = TextEditingController();
+
+  void sendTextChat() {
     final newChat = TextChat(
       senderIndex: userID,
       dateTime: DateTime.now(),
-      text: text,
+      text: textChatController.text,
     );
     chatController.updateChat(newChat);
+    textChatController.clear();
+  }
+
+  void sendPhotoChat() async {
+    final image = await chatController.loadingOverlay(
+      asyncFunction: () async {
+        return await WImagePicker.pickImage();
+      },
+    );
+    if (image == null) {
+      return;
+    }
+    final newChat = PhotoChat(
+      senderIndex: userID,
+      dateTime: DateTime.now(),
+      photoURL: "",
+      thumbData: image.thumbData,
+    );
+    chatList.add(newChat);
+    chatController.update();
+    final photoURL = await fileController.uploadFile(image.path);
+    final updatedChat = newChat.copyWith(
+      photoURL: photoURL,
+    );
+    chatController.updateChat(updatedChat);
+    chatController.update([chatViewID(updatedChat)]);
+  }
+
+  String chatViewID(Chat chat) {
+    return "chatViewID ${chat.index}";
   }
 
   final List<Chat> chatList = [];
@@ -81,6 +119,10 @@ class ChatViewModel {
       }
     }
     return false;
+  }
+
+  bool isMineChat(Chat chat) {
+    return userID == chat.senderIndex;
   }
 
   User loadUser(String userID) {

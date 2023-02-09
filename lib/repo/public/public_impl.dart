@@ -5,6 +5,10 @@ class PublicImpl extends PublicRepo {
   final String publicID;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final publicCollection = "public";
+
+  @override
+  Future init() async {}
+
   CollectionReference get collection => _firestore.collection(publicCollection);
 
   DocumentReference document(String document) {

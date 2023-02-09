@@ -1,15 +1,12 @@
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/public.dart';
 import 'package:wurigiri/repo/public/public_repo.dart';
 
-class PublicController extends GetxController {
-  PublicController(
-    this.publicRepo,
-  );
+class PublicController extends Controller<PublicRepo> {
+  PublicController(super.repo);
 
   static PublicController find() => Get.find<PublicController>();
-
-  final PublicRepo publicRepo;
 
   Public public = Public.empty();
 
@@ -20,7 +17,7 @@ class PublicController extends GetxController {
   }
 
   void _initPublicStream() {
-    publicRepo.publicStream.listen((event) {
+    repo.publicStream.listen((event) {
       if (event.isEmpty) {
         public = Public.empty();
       } else {
@@ -31,6 +28,6 @@ class PublicController extends GetxController {
   }
 
   Future updatePublic(Public newPublic) async {
-    await publicRepo.updatePublic(newPublic.toMap());
+    await repo.updatePublic(newPublic.toMap());
   }
 }

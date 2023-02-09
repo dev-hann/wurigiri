@@ -4,7 +4,7 @@ import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view.dart';
 import 'package:wurigiri/view/feed_view/feed_item_view.dart';
-import 'package:wurigiri/widget/w_loading.dart';
+import 'package:wurigiri/widget/loading.dart';
 
 class FeedView extends StatefulWidget {
   const FeedView({super.key});

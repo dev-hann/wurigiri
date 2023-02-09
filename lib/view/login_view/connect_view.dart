@@ -4,7 +4,7 @@ import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/connection.dart';
 import 'package:wurigiri/view/home_view.dart';
-import 'package:wurigiri/widget/w_loading.dart';
+import 'package:wurigiri/widget/loading.dart';
 
 class ConnectView extends StatelessWidget {
   ConnectView({

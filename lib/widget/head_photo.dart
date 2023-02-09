@@ -1,12 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 
-class HeadPhoto extends StatelessWidget {
+class WHeadPhoto extends StatelessWidget {
   final String url;
 
-  const HeadPhoto(
+  const WHeadPhoto(
     this.url, {
     super.key,
     this.size,

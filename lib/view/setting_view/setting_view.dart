@@ -12,7 +12,7 @@ class SettingView extends StatelessWidget {
   }
 
   Widget headPhoto() {
-    return HeadPhoto(
+    return WHeadPhoto(
       "",
       badge: GestureDetector(
         onTap: () async {

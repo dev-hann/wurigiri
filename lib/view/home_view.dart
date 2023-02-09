@@ -34,15 +34,15 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final userController = UserController.find();
   @override
   void initState() {
     super.initState();
-    final userController = UserController.find();
     final publicID = userController.publicID;
     userController.reqeustOther();
-    Controller.put(ChatController(ChatImpl(publicID)));
-    Controller.put(FileController(FileImpl()));
-    Get.put(PublicController(PublicImpl(publicID)));
+    Controller.put<ChatController>(ChatController(ChatImpl(publicID)));
+    Controller.put<FileController>(FileController(FileImpl()));
+    Controller.put<PublicController>(PublicController(PublicImpl(publicID)));
     Get.put(FeedController(FeedImpl(publicID)));
     Get.put(NotifyController(NotifyImpl()));
   }
@@ -58,7 +58,7 @@ class _HomeViewState extends State<HomeView> {
     return GestureDetector(
       onTap: () {
         Get.to(
-          UserDetailView(user: UserController.find().user),
+          UserDetailView(user: userController.user),
         );
       },
       child: Text("$inDays"),

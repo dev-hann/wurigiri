@@ -1,11 +1,17 @@
 library chat;
 
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 part './chat_text.dart';
+part './chat_photo.dart';
+part './chat_trash.dart';
 
 enum ChatType {
   text,
+  photo,
+  trash,
 }
 
 abstract class Chat extends Equatable with Comparable<Chat> {
@@ -34,6 +40,11 @@ abstract class Chat extends Equatable with Comparable<Chat> {
     switch (type) {
       case ChatType.text:
         return TextChat.fromMap(map);
+      case ChatType.photo:
+        return PhotoChat.fromMap(map);
+      case ChatType.trash:
+        // TODO: Handle this case.
+        break;
     }
   }
 }

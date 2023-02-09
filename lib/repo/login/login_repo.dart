@@ -2,10 +2,11 @@ library login_repo;
 
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:wurigiri/data/service.dart';
+import 'package:wurigiri/repo/repo.dart';
 
 part 'login_impl.dart';
 
-abstract class LoginRepo {
+abstract class LoginRepo extends Repo {
   Future<String> loadDeviceID();
 
   String inviteCode();

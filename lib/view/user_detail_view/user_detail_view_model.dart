@@ -30,7 +30,7 @@ class UserDetailViewModel {
     }
     userController.loadingOverlay(
       asyncFunction: () async {
-        final headPhotoURL = await fileController.uploadFile(res);
+        final headPhotoURL = await fileController.uploadFile(res.path);
         final userHeadPhoto = user.headPhoto;
         if (userHeadPhoto.isNotEmpty) {
           fileController.removeFile(userHeadPhoto);

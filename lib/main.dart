@@ -10,14 +10,14 @@ import 'package:wurigiri/repo/login/login_repo.dart';
 import 'package:wurigiri/repo/user/user_repo.dart';
 import 'package:wurigiri/view/home_view.dart';
 import 'package:wurigiri/view/login_view/login_view.dart';
-import 'package:wurigiri/widget/w_loading.dart';
+import 'package:wurigiri/widget/loading.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Firebase.initializeApp();
   await Controller.put<UserController>(UserController(UserImpl()));
-  Get.put(LoginController(LoginImpl()));
+  Controller.put<LoginController>(LoginController(LoginImpl()));
   runApp(const MyApp());
 }
 

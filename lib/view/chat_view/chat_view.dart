@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
-import 'package:wurigiri/view/chat_view/chat_item_view.dart';
+import 'package:wurigiri/view/chat_view/chat_item_view/chat_item_view.dart';
 import 'package:wurigiri/view/chat_view/chat_view_model.dart';
 
 class ChatView extends StatefulWidget {
@@ -13,8 +13,6 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final ChatViewModel viewModel = ChatViewModel();
-
-  final TextEditingController textChatController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -36,15 +34,20 @@ class _ChatViewState extends State<ChatView> {
   Widget bottom() {
     return Row(
       children: [
+        IconButton(
+          onPressed: () {
+            viewModel.sendPhotoChat();
+          },
+          icon: const Icon(Icons.photo),
+        ),
         Expanded(
           child: TextField(
-            controller: textChatController,
+            controller: viewModel.textChatController,
           ),
         ),
         IconButton(
           onPressed: () async {
-            viewModel.sendTextChat(textChatController.text);
-            textChatController.clear();
+            viewModel.sendTextChat();
           },
           icon: const Icon(Icons.send),
         ),
@@ -72,11 +75,17 @@ class _ChatViewState extends State<ChatView> {
               itemCount: chatList.length,
               itemBuilder: (context, index) {
                 final chat = chatList[index];
-                return ChatItemView(
-                  key: ValueKey(chat.index),
-                  sender: viewModel.loadUser(chat.senderIndex),
-                  chat: chat,
-                  isRead: viewModel.isReadChat(chat),
+                return GetBuilder<ChatController>(
+                  id: viewModel.chatViewID(chat),
+                  builder: (_) {
+                    return ChatItemView(
+                      key: ValueKey(chat.index),
+                      chat: chat,
+                      sender: viewModel.loadUser(chat.senderIndex),
+                      isRead: viewModel.isReadChat(chat),
+                      isMine: viewModel.isMineChat(chat),
+                    );
+                  },
                 );
               },
             );

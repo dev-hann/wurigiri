@@ -5,6 +5,9 @@ class LoginImpl extends LoginRepo {
   final String connectCollection = "connect";
 
   @override
+  Future init() async {}
+
+  @override
   Future<String> loadDeviceID() async {
     final res = await PlatformDeviceId.getDeviceId;
     if (res == null) {

@@ -12,13 +12,6 @@ dependencies:
   # StateManager
   get:
 
-  # Utils
-  equatable:
-  image_picker: ^0.8.6+1
-  platform_device_id: ^1.0.1
-  badges:
-  image_cropper: ^3.0.1
-
   # Firebase
   firebase_core:
   cloud_firestore:
@@ -27,6 +20,17 @@ dependencies:
   # LocalDB
   hive_flutter:
   hive:
+
+  # Utils
+  equatable:
+  image_picker: ^0.8.6+1
+  platform_device_id: ^1.0.1
+  badges:
+  image_cropper: ^3.0.1
+  flutter_image_compress: ^1.0.0-nullsafety
+  intl:
+  just_the_tooltip: ^0.0.12
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:

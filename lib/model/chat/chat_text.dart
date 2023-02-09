@@ -2,12 +2,10 @@ part of chat;
 
 class TextChat extends Chat {
   TextChat({
-    required String senderIndex,
-    required DateTime dateTime,
+    required super.senderIndex,
+    required super.dateTime,
     required this.text,
   }) : super(
-          senderIndex: senderIndex,
-          dateTime: dateTime,
           typeIndex: ChatType.text.index,
         );
 
