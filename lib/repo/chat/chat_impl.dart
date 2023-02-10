@@ -36,6 +36,11 @@ class ChatImpl extends ChatRepo {
   }
 
   @override
+  dynamic loadChat(int chatIndex) {
+    return chatDB.get("$chatIndex");
+  }
+
+  @override
   List<Map<String, dynamic>> loadChatList(int page) {
     return chatDB.getAll();
   }

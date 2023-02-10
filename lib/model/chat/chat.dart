@@ -6,12 +6,12 @@ import 'package:equatable/equatable.dart';
 
 part './chat_text.dart';
 part './chat_photo.dart';
-part './chat_trash.dart';
+part './chat_system.dart';
 
 enum ChatType {
   text,
   photo,
-  trash,
+  system,
 }
 
 abstract class Chat extends Equatable with Comparable<Chat> {
@@ -19,10 +19,12 @@ abstract class Chat extends Equatable with Comparable<Chat> {
     required this.senderIndex,
     required this.dateTime,
     required this.typeIndex,
+    this.isDeleted = false,
   });
   final DateTime dateTime;
   final String senderIndex;
   final int typeIndex;
+  final bool isDeleted;
   ChatType get type => ChatType.values[typeIndex];
 
   int get index => dateTime.millisecondsSinceEpoch;
@@ -42,9 +44,8 @@ abstract class Chat extends Equatable with Comparable<Chat> {
         return TextChat.fromMap(map);
       case ChatType.photo:
         return PhotoChat.fromMap(map);
-      case ChatType.trash:
-        // TODO: Handle this case.
-        break;
+      case ChatType.system:
+        return SystemChat.fromMap(map);
     }
   }
 }

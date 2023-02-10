@@ -1,7 +1,7 @@
 part of chat_item_view;
 
-class _PhotoChatBody extends StatelessWidget {
-  const _PhotoChatBody(
+class _ChatPhotoBody extends StatelessWidget {
+  const _ChatPhotoBody(
     this.chat, {
     required this.width,
   });

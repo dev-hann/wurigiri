@@ -33,4 +33,12 @@ class ChatController extends Controller<ChatRepo> {
       data: enter.toMap(),
     );
   }
+
+  Chat? loadChat(int chatIndex) {
+    final data = repo.loadChat(chatIndex);
+    if (data == null) {
+      return null;
+    }
+    return Chat.fromMap(data);
+  }
 }

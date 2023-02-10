@@ -20,4 +20,6 @@ abstract class ChatRepo extends Repo {
     required String userID,
     required Map<String, dynamic> data,
   });
+
+  dynamic loadChat(int chatIndex);
 }
