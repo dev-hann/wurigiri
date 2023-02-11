@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
 import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
@@ -152,8 +151,9 @@ class ChatViewModel {
     if (chat.type == ChatType.photo) {
       fileController.removeFile((chat as PhotoChat).photoURL);
     }
-    final removedChat = chat.copyWith();
-    await chatController.updateChat(removedChat);
+    chat.isDeleted = true;
+
+    await chatController.updateChat(chat);
     chatController.update([chatViewID(chat)]);
   }
 

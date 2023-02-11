@@ -43,18 +43,20 @@ class UserDetailViewModel {
           newUser,
           withServer: true,
         );
-        userController.update();
         return true;
       },
     );
   }
 
-  void updateName() {
+  Future<void> updateName() async {
     final text = nameController.text;
+    if (text == user.name) {
+      return;
+    }
+    await Future.delayed(Duration.zero);
     final newUser = user.copyWith(
       name: text,
     );
-    user = newUser;
     userController.updateUser(
       newUser,
       withServer: true,

@@ -1,3 +1,4 @@
+import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/user_controller.dart';
@@ -25,53 +26,95 @@ class _UserDetailViewState extends State<UserDetailView> {
     viewModel.init(widget.user);
   }
 
+  @override
+  void dispose() {
+    viewModel.updateName();
+    super.dispose();
+  }
+
   AppBar appBar() {
     return AppBar();
   }
 
   Widget headPhoto() {
-    return WHeadPhoto(
-      viewModel.user.headPhoto,
-      badge: GestureDetector(
+    Widget? cameraBadge() {
+      if (viewModel.isOther) {
+        return null;
+      }
+      return GestureDetector(
         onTap: () async {
           viewModel.editHeadPhoto();
         },
         child: const Icon(Icons.camera),
-      ),
+      );
+    }
+
+    return WHeadPhoto(
+      viewModel.user.headPhoto,
+      badge: cameraBadge(),
     );
   }
 
   Widget nameTextField() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            enabled: !viewModel.isOther,
-            controller: viewModel.nameController,
+    Widget editIcon({
+      required Widget child,
+    }) {
+      if (viewModel.isOther) {
+        return child;
+      }
+      const iconSize = 16.0;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(width: iconSize),
+          child,
+          const Icon(
+            Icons.edit,
+            size: iconSize,
+          ),
+        ],
+      );
+    }
+
+    return editIcon(
+      child: SizedBox(
+        width: Get.width * 0.4,
+        child: AutoSizeTextField(
+          enabled: !viewModel.isOther,
+          controller: viewModel.nameController,
+          textAlign: TextAlign.center,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            viewModel.updateName();
-          },
-          child: const Text("Submit"),
-        ),
-      ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBar(),
-      body: GetBuilder<UserController>(builder: (context) {
-        return Column(
-          children: [
-            headPhoto(),
-            nameTextField(),
-          ],
-        );
-      }),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: appBar(),
+        body: GetBuilder<UserController>(
+          id: UserController.userViewID,
+          builder: (context) {
+            return Align(
+              alignment: const Alignment(0, -0.4),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  headPhoto(),
+                  nameTextField(),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

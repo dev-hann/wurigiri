@@ -36,53 +36,6 @@ class _ChatViewState extends State<ChatView> {
   }
 
   Widget bottom() {
-    Widget replyView(Chat? replyChat) {
-      if (replyChat == null) {
-        return const SizedBox();
-      }
-      Widget header = const SizedBox();
-      Widget body = const SizedBox();
-      if (replyChat.type == ChatType.photo) {}
-      switch (replyChat.type) {
-        case ChatType.text:
-          body = Text(
-            (replyChat as TextChat).text,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          );
-          break;
-        case ChatType.photo:
-          header = Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: CachedNetworkImage(
-              imageUrl: (replyChat as PhotoChat).photoURL,
-              width: 50.0,
-              height: 50.0,
-              fit: BoxFit.cover,
-            ),
-          );
-          body = const Text("사진");
-          break;
-        case ChatType.system:
-          break;
-      }
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            header,
-            Expanded(child: body),
-            IconButton(
-              onPressed: () {
-                viewModel.updateReplyChat(null);
-              },
-              icon: const Icon(Icons.cancel),
-            ),
-          ],
-        ),
-      );
-    }
-
     Widget photoButton(Chat? replyChat) {
       if (replyChat != null) {
         return const SizedBox();
@@ -160,49 +113,53 @@ class _ChatViewState extends State<ChatView> {
       child: Material(
         child: SafeArea(
           top: false,
-          maintainBottomViewPadding: true,
+          bottom: false,
           child: Scaffold(
             appBar: appBar(),
-            bottomSheet: bottom(),
             body: GetBuilder<ChatController>(
               builder: (controller) {
                 final chatList = viewModel.chatList.reversed.toList();
-                return ListView.builder(
-                  controller: viewModel.scrollController,
-                  padding: const EdgeInsets.only(
-                    bottom: kToolbarHeight,
-                  ),
-                  reverse: true,
-                  itemCount: chatList.length,
-                  itemBuilder: (context, index) {
-                    final chat = chatList[index];
-                    return GetBuilder<ChatController>(
-                      id: viewModel.chatViewID(chat),
-                      builder: (_) {
-                        final sender = viewModel.loadUser(chat.senderIndex);
-                        final replyChat = chat is TextChat
-                            ? viewModel.loadChat(chat.replyIndex)
-                            : null;
-                        return ChatItemView(
-                          chat: chat,
-                          replyChat: replyChat,
-                          toolTipController: viewModel.toolTipController,
-                          sender: sender,
-                          isRead: viewModel.isReadChat(chat),
-                          isMine: viewModel.isMineChat(chat),
-                          onTapHeadPhoto: () {
-                            Get.to(UserDetailView(user: sender));
-                          },
-                          onTapRemove: () {
-                            viewModel.onTapRemoveChat(chat);
-                          },
-                          onTapReply: () {
-                            viewModel.updateReplyChat(chat);
-                          },
-                        );
-                      },
-                    );
-                  },
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        controller: viewModel.scrollController,
+                        reverse: true,
+                        itemCount: chatList.length,
+                        itemBuilder: (context, index) {
+                          final chat = chatList[index];
+                          return GetBuilder<ChatController>(
+                            id: viewModel.chatViewID(chat),
+                            builder: (_) {
+                              final sender =
+                                  viewModel.loadUser(chat.senderIndex);
+                              final replyChat = chat is TextChat
+                                  ? viewModel.loadChat(chat.replyIndex)
+                                  : null;
+                              return ChatItemView(
+                                chat: chat,
+                                replyChat: replyChat,
+                                toolTipController: viewModel.toolTipController,
+                                sender: sender,
+                                isRead: viewModel.isReadChat(chat),
+                                isMine: viewModel.isMineChat(chat),
+                                onTapHeadPhoto: () {
+                                  Get.to(UserDetailView(user: sender));
+                                },
+                                onTapRemove: () {
+                                  viewModel.onTapRemoveChat(chat);
+                                },
+                                onTapReply: () {
+                                  viewModel.updateReplyChat(chat);
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    bottom(),
+                  ],
                 );
               },
             ),

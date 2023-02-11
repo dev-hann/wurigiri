@@ -15,7 +15,7 @@ enum ChatType {
 }
 
 abstract class Chat extends Equatable with Comparable<Chat> {
-  const Chat({
+  Chat({
     required this.senderIndex,
     required this.dateTime,
     required this.typeIndex,
@@ -24,7 +24,7 @@ abstract class Chat extends Equatable with Comparable<Chat> {
   final DateTime dateTime;
   final String senderIndex;
   final int typeIndex;
-  final bool isDeleted;
+  bool isDeleted;
   ChatType get type => ChatType.values[typeIndex];
 
   int get index => dateTime.millisecondsSinceEpoch;

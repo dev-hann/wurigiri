@@ -29,16 +29,19 @@ class UserController extends Controller<UserRepo> {
     return User.fromMap(userData);
   }
 
+  static String userViewID = "userViewID";
+
   Future updateUser(
     User newUser, {
     bool withServer = false,
   }) async {
+    user = newUser;
+    update([userViewID]);
     if (withServer) {
       await repo.updateUser(
         id: newUser.id,
         data: newUser.toMap(),
       );
     }
-    user = newUser;
   }
 }

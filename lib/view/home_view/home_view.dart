@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
@@ -15,6 +14,7 @@ import 'package:wurigiri/repo/public/public_repo.dart';
 import 'package:wurigiri/repo/file/file_repo.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
+import 'package:wurigiri/view/home_view/user_data_view.dart';
 import 'package:wurigiri/view/setting_view/setting_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
 
@@ -47,21 +47,18 @@ class _HomeViewState extends State<HomeView> {
     Get.put(NotifyController(NotifyImpl()));
   }
 
-  AppBar appBar() {
-    return AppBar(
-      title: const Text("title"),
-    );
-  }
-
-  Widget dDayText() {
-    final inDays = DateTime.now().difference(firstMeet).inDays;
-    return GestureDetector(
-      onTap: () {
-        Get.to(
-          UserDetailView(user: userController.user),
+  Widget userDataWidget() {
+    return GetBuilder<UserController>(
+      id: UserController.userViewID,
+      builder: (context) {
+        return UserDataView(
+          me: userController.user,
+          other: userController.other,
+          onTapUser: (user) {
+            Get.to(UserDetailView(user: user));
+          },
         );
       },
-      child: Text("$inDays"),
     );
   }
 
@@ -94,11 +91,10 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          dDayText(),
+          userDataWidget(),
           const SizedBox(height: 16.0),
           icons(),
           const SizedBox(height: 16.0),
