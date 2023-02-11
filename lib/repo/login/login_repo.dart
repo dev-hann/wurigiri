@@ -2,14 +2,15 @@ library login_repo;
 
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:wurigiri/data/service.dart';
+import 'package:wurigiri/repo/repo.dart';
 
 part 'login_impl.dart';
 
-abstract class LoginRepo {
+abstract class LoginRepo extends Repo {
   Future<String> loadDeviceID();
 
   String inviteCode();
-  Stream<Map<String, dynamic>> connectStream(String inviteCode);
+  Stream<Map<String, dynamic>?> connectStream(String inviteCode);
   Future updateConnection({
     required String inviteCode,
     required Map<String, dynamic> data,
@@ -17,4 +18,6 @@ abstract class LoginRepo {
   Future<dynamic> requestConnection(String inviteCode);
 
   Future disposeInvite(String inviteCode);
+
+  Future connected(String inviteCode, Map<String, dynamic> data);
 }

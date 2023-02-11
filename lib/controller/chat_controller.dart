@@ -1,36 +1,44 @@
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
+import 'package:wurigiri/model/chat/chat_room_enter.dart';
 import 'package:wurigiri/repo/chat/chat_repo.dart';
 
-class ChatController extends GetxController {
-  ChatController(this.chatRepo);
+class ChatController extends Controller<ChatRepo> {
+  ChatController(super.repo);
 
   static ChatController find() => Get.find<ChatController>();
 
-  final ChatRepo chatRepo;
+  Stream<Map<String, dynamic>> chatStream() => repo.chatStream();
 
-  final List<Chat> chatList = [];
-
-  @override
-  void onReady() {
-    _initChatStream();
-    super.onReady();
+  List<Chat> loadChatList(int page) {
+    final list = repo.loadChatList(page);
+    return list.map((e) => Chat.fromMap(e)).toList();
   }
 
-  void _initChatStream() {
-    chatRepo.chatStream().listen((event) {
-      final newChat = Chat.fromMap(event);
-      chatList.add(newChat);
-      update();
-    });
-  }
-
-  Future loadChatList() async {}
-  Future requestChatList() async {}
-  Future updateChat(Chat chat) async {
-    chatRepo.updateChat(
+  Future updateChat(Chat chat) {
+    return repo.updateChat(
       "${chat.index}",
       chat.toMap(),
     );
+  }
+
+  Stream<Map<String, dynamic>> chatRoomEnterStream() =>
+      repo.chatRoomEnterStrem();
+
+  Future enterChatRoom(String userID) async {
+    final enter = ChatRoomEnter.now(userID);
+    return repo.enterChatRoom(
+      userID: userID,
+      data: enter.toMap(),
+    );
+  }
+
+  Chat? loadChat(int chatIndex) {
+    final data = repo.loadChat(chatIndex);
+    if (data == null) {
+      return null;
+    }
+    return Chat.fromMap(data);
   }
 }

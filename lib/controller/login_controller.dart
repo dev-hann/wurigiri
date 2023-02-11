@@ -1,63 +1,76 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/connection.dart';
+import 'package:wurigiri/model/public.dart';
 import 'package:wurigiri/repo/login/login_repo.dart';
 
-class LoginController extends GetxController {
-  LoginController(this.loginRepo);
+class LoginController extends Controller<LoginRepo> {
+  LoginController(super.repo);
 
   static LoginController find() => Get.find<LoginController>();
 
-  final LoginRepo loginRepo;
-
   Future<String> loadDeviceID() {
-    return loginRepo.loadDeviceID();
+    return repo.loadDeviceID();
   }
 
   StreamSubscription? _inviteSub;
   void _initConnectStream(String inviteCode) {
-    _inviteSub = loginRepo.connectStream(inviteCode).listen((event) {
-      if (event.isEmpty) {
+    _inviteSub = repo.connectStream(inviteCode).listen((event) {
+      if (event == null) {
         return;
       }
       final connection = Connection.fromMap(event);
-      if (connection.guest && connection.invitator) {
+      if (connection.guest.isNotEmpty && connection.invitator.isNotEmpty) {
         _inviteSub?.cancel();
         cancelInvite(inviteCode);
         if (Get.isDialogOpen ?? false) {
-          Get.back(result: inviteCode);
+          Get.back(result: connection);
         }
       }
     });
   }
 
   Future cancelInvite(String inviteCode) {
-    return loginRepo.disposeInvite(inviteCode);
+    return repo.disposeInvite(inviteCode);
   }
 
   Future<String> invite() async {
-    final inviteCode = loginRepo.inviteCode();
+    final inviteCode = repo.inviteCode();
     _initConnectStream(inviteCode);
-    await loginRepo.updateConnection(
+    await repo.updateConnection(
       inviteCode: inviteCode,
-      data: const Connection(
-        invitator: true,
-        guest: false,
+      data: Connection(
+        publicID: inviteCode,
+        invitator: await loadDeviceID(),
+        guest: "",
       ).toMap(),
     );
     return inviteCode;
   }
 
-  Future connect(String inviteCode) async {
-    final connectionData = await loginRepo.requestConnection(inviteCode);
+  Future<Connection?> connect(String inviteCode) async {
+    final connectionData = await repo.requestConnection(inviteCode);
     if (connectionData == null) {
-      return;
+      return null;
     }
     final connection = Connection.fromMap(connectionData);
-    await loginRepo.updateConnection(
+    await repo.updateConnection(
       inviteCode: inviteCode,
-      data: connection.copyWith(guest: true).toMap(),
+      data: connection
+          .copyWith(
+            guest: await loadDeviceID(),
+          )
+          .toMap(),
+    );
+    return connection;
+  }
+
+  Future connected(inviteCode) {
+    return repo.connected(
+      inviteCode,
+      Public.empty().toMap(),
     );
   }
 }

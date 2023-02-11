@@ -1,8 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+import 'dart:io';
 
-@Deprecated("will be deprecated. use firestore")
-class FireService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+class Service {
+  final _firestore = FirebaseFirestore.instance;
+  final _storage = FirebaseStorage.instance;
 
   DocumentReference _ref(
     String collection,
@@ -11,70 +15,39 @@ class FireService {
     return _firestore.collection(collection).doc(document);
   }
 
-  Stream<Map<String, dynamic>> stream({
-    required String collection,
-    required String document,
-  }) {
-    return _ref(collection, document).snapshots().map((event) {
-      final data = event.data();
-      if (data == null) {
-        return {};
-      }
-      return data as Map<String, dynamic>;
-    });
+  DocumentReference publicRef(String publicID) {
+    return _ref("public", publicID);
   }
 
-  Future update({
-    required String collection,
-    required String document,
-    required Map<String, dynamic> data,
-  }) async {
-    try {
-      return _ref(collection, document).update(data);
-    } catch (e) {
-      print(e);
-    }
+  CollectionReference feedRef(String publicID) {
+    return publicRef(publicID).collection("feed");
   }
 
-  Future set({
-    required String collection,
-    required String document,
-    required Map<String, dynamic> data,
-  }) async {
-    try {
-      return _ref(collection, document).set(data);
-    } catch (e) {
-      print(e);
-    }
+  CollectionReference chatRef(String publicID) {
+    return publicRef(publicID).collection("chat");
   }
 
-  Future remove({
-    required String collection,
-    required String document,
-  }) async {
-    try {
-      return _ref(collection, document).delete();
-    } catch (e) {
-      print(e);
-    }
+  CollectionReference userRef() {
+    return _firestore.collection("user");
   }
 
-  Future<List<QueryDocumentSnapshot>> getDocumentList(
-    String collection,
-  ) async {
-    final snapshot = await _firestore.collection(collection).get();
-    return snapshot.docs;
+  CollectionReference chatEnterRef(String publicID) {
+    return publicRef(publicID).collection("chatEnter");
   }
 
-  Future getDocument({
-    required String collection,
-    required String document,
-  }) async {
-    try {
-      final res = await _ref(collection, document).get();
-      return res.data();
-    } catch (e) {
-      print(e);
-    }
+  CollectionReference connectRef() {
+    return _firestore.collection("connect");
+  }
+
+  Future<String> uploadFile(String filePath) async {
+    final index = DateTime.now().millisecondsSinceEpoch;
+    final ref = _storage.ref(index.toString());
+    await ref.putFile(File(filePath));
+    return ref.getDownloadURL();
+  }
+
+  Future removeFile(String fileName) {
+    final ref = _storage.ref(fileName);
+    return ref.delete();
   }
 }

@@ -1,38 +1,37 @@
 part of chat;
 
-class TextChat extends Chat {
-  TextChat({
+class PhotoChat extends Chat {
+  PhotoChat({
     required super.senderIndex,
     required super.dateTime,
-    required this.text,
     super.isDeleted,
-    this.replyIndex,
-  }) : super(
-          typeIndex: ChatType.text.index,
-        );
-  final int? replyIndex;
-  final String text;
+    required this.photoURL,
+    required this.thumbData,
+  }) : super(typeIndex: ChatType.photo.index);
+
+  final String photoURL;
+  final Uint8List thumbData;
   @override
   List<Object?> get props => [
         index,
         dateTime,
         senderIndex,
         isDeleted,
-        text,
-        replyIndex,
+        photoURL,
       ];
 
-  factory TextChat.fromMap(dynamic map) {
+  factory PhotoChat.fromMap(dynamic map) {
     final data = Map<String, dynamic>.from(map);
-    return TextChat(
+    return PhotoChat(
       senderIndex: data["senderIndex"],
       dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
       isDeleted: data["isDeleted"],
-      replyIndex: data["replyIndex"],
-      text: data["text"],
+      photoURL: data["photoURL"],
+      thumbData: Uint8List.fromList(
+        List<int>.from(data["thumbData"]),
+      ),
     );
   }
-
   @override
   Map<String, dynamic> toMap() {
     return {
@@ -40,25 +39,24 @@ class TextChat extends Chat {
       "senderIndex": senderIndex,
       "dateTime": dateTime.millisecondsSinceEpoch,
       "isDeleted": isDeleted,
-      "replyIndex": replyIndex,
-      "text": text,
+      "photoURL": photoURL,
+      "thumbData": thumbData.toList(),
     };
   }
 
-  @override
-  TextChat copyWith({
+  PhotoChat copyWith({
     String? senderIndex,
     DateTime? dateTime,
+    String? photoURL,
     bool? isDeleted,
-    int? replyIndex,
-    String? text,
+    Uint8List? thumbData,
   }) {
-    return TextChat(
+    return PhotoChat(
       senderIndex: senderIndex ?? this.senderIndex,
       dateTime: dateTime ?? this.dateTime,
       isDeleted: isDeleted ?? this.isDeleted,
-      replyIndex: replyIndex ?? this.replyIndex,
-      text: text ?? this.text,
+      photoURL: photoURL ?? this.photoURL,
+      thumbData: thumbData ?? this.thumbData,
     );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/feed.dart';
@@ -11,26 +9,16 @@ class FeedController extends Controller<FeedRepo> {
   static FeedController find() => Get.find<FeedController>();
 
   final List<Feed> feedList = [];
-  final List<String> feedIndexList = [];
 
   int _currentPage = 1;
-  Future refreshFeedList([List<String>? feedIndexList]) async {
+  Future refreshFeedList() async {
     _currentPage = 1;
     feedList.clear();
-    if (feedIndexList != null) {
-      this.feedIndexList.clear();
-      this.feedIndexList.addAll(feedIndexList);
-    }
     requestFeedList();
   }
 
   Future requestFeedList() async {
-    final listData = await repo.requestFeedList(
-      feedIndexList.sublist(
-        0,
-        min(_currentPage * 21, feedIndexList.length),
-      ),
-    );
+    final listData = await repo.requestFeedList();
     final list = listData.map((e) {
       return Feed.fromMap(e);
     }).toList();
@@ -45,7 +33,6 @@ class FeedController extends Controller<FeedRepo> {
   }) {
     feedList.add(newFeed);
     feedList.sort();
-    feedIndexList.add(newFeed.index);
     update();
     return repo.updateFeed(
       index: newFeed.index,
@@ -56,7 +43,6 @@ class FeedController extends Controller<FeedRepo> {
   Future removeFeed(String feedIndex) async {
     feedList.removeWhere((element) => element.index == feedIndex);
     update();
-    feedIndexList.removeWhere((element) => element == feedIndex);
     return repo.removeFeed(feedIndex);
   }
 }

@@ -5,6 +5,10 @@ class PublicImpl extends PublicRepo {
   final String publicID;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final publicCollection = "public";
+
+  @override
+  Future init() async {}
+
   CollectionReference get collection => _firestore.collection(publicCollection);
 
   DocumentReference document(String document) {
@@ -26,10 +30,5 @@ class PublicImpl extends PublicRepo {
   @override
   Future updatePublic(Map<String, dynamic> data) {
     return document(publicID).set(data);
-  }
-
-  @override
-  Future connected(String inviteCode, Map<String, dynamic> data) {
-    return document(inviteCode).set(data);
   }
 }
