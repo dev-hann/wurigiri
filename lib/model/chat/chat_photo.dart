@@ -4,7 +4,6 @@ class PhotoChat extends Chat {
   PhotoChat({
     required super.senderIndex,
     required super.dateTime,
-    super.isDeleted,
     required this.photoURL,
     required this.thumbData,
   }) : super(typeIndex: ChatType.photo.index);
@@ -16,7 +15,6 @@ class PhotoChat extends Chat {
         index,
         dateTime,
         senderIndex,
-        isDeleted,
         photoURL,
       ];
 
@@ -25,7 +23,6 @@ class PhotoChat extends Chat {
     return PhotoChat(
       senderIndex: data["senderIndex"],
       dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
-      isDeleted: data["isDeleted"],
       photoURL: data["photoURL"],
       thumbData: Uint8List.fromList(
         List<int>.from(data["thumbData"]),
@@ -38,7 +35,6 @@ class PhotoChat extends Chat {
       "typeIndex": typeIndex,
       "senderIndex": senderIndex,
       "dateTime": dateTime.millisecondsSinceEpoch,
-      "isDeleted": isDeleted,
       "photoURL": photoURL,
       "thumbData": thumbData.toList(),
     };
@@ -54,7 +50,6 @@ class PhotoChat extends Chat {
     return PhotoChat(
       senderIndex: senderIndex ?? this.senderIndex,
       dateTime: dateTime ?? this.dateTime,
-      isDeleted: isDeleted ?? this.isDeleted,
       photoURL: photoURL ?? this.photoURL,
       thumbData: thumbData ?? this.thumbData,
     );

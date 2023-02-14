@@ -151,10 +151,9 @@ class ChatViewModel {
     if (chat.type == ChatType.photo) {
       fileController.removeFile((chat as PhotoChat).photoURL);
     }
-    chat.isDeleted = true;
-
-    await chatController.updateChat(chat);
-    chatController.update([chatViewID(chat)]);
+    final removedChat = RemovedChat.fromChat(chat);
+    await chatController.updateChat(removedChat);
+    chatController.update([chatViewID(removedChat)]);
   }
 
   final String chatBottomViewID = "ChatBottomViewID";

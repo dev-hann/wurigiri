@@ -1,6 +1,7 @@
 library setting_repo;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wurigiri/data/service.dart';
 import 'package:wurigiri/repo/repo.dart';
 
 part 'public_impl.dart';

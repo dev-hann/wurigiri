@@ -1,22 +1,25 @@
+library home_view;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
-import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
+import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
-import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/repo/chat/chat_repo.dart';
 import 'package:wurigiri/repo/feed/feed_repo.dart';
+import 'package:wurigiri/repo/file/file_repo.dart';
 import 'package:wurigiri/repo/notify/notify_repo.dart';
 import 'package:wurigiri/repo/public/public_repo.dart';
-import 'package:wurigiri/repo/file/file_repo.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
 import 'package:wurigiri/view/home_view/user_data_view.dart';
 import 'package:wurigiri/view/setting_view/setting_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
+
+part './home_background_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,26 +37,26 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final userController = UserController.find();
   @override
   void initState() {
-    super.initState();
+    final userController = UserController.find();
     final publicID = userController.publicID;
     userController.reqeustOther();
-    Controller.put<ChatController>(ChatController(ChatImpl(publicID)));
-    Controller.put<FileController>(FileController(FileImpl()));
-    Controller.put<PublicController>(PublicController(PublicImpl(publicID)));
-    Get.put(FeedController(FeedImpl(publicID)));
+    Get.put(ChatController(ChatImpl(publicID))).init();
+    Get.put(PublicController(PublicImpl(publicID))).init();
+    Get.put(FileController(FileImpl())).init();
+    Get.put(FeedController(FeedImpl(publicID))).init();
     Get.put(NotifyController(NotifyImpl()));
+    super.initState();
   }
 
   Widget userDataWidget() {
     return GetBuilder<UserController>(
       id: UserController.userViewID,
-      builder: (context) {
+      builder: (controller) {
         return UserDataView(
-          me: userController.user,
-          other: userController.other,
+          me: controller.user,
+          other: controller.other,
           onTapUser: (user) {
             Get.to(UserDetailView(user: user));
           },
@@ -64,25 +67,27 @@ class _HomeViewState extends State<HomeView> {
 
   Widget icons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        GestureDetector(
-          onTap: () {
+        IconButton(
+          onPressed: () {
             Get.to(const FeedView());
           },
-          child: const Icon(Icons.history),
+          icon: const Icon(Icons.history),
         ),
-        GestureDetector(
-          onTap: () {
+        const SizedBox(width: 8.0),
+        IconButton(
+          onPressed: () {
             Get.to(const ChatView());
           },
-          child: const Icon(Icons.chat),
+          icon: const Icon(Icons.chat),
         ),
-        GestureDetector(
-          onTap: () {
+        const SizedBox(width: 8.0),
+        IconButton(
+          onPressed: () {
             Get.to(const SettingView());
           },
-          child: const Icon(Icons.settings),
+          icon: const Icon(Icons.settings),
         ),
       ],
     );
@@ -90,15 +95,22 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          userDataWidget(),
-          const SizedBox(height: 16.0),
-          icons(),
-          const SizedBox(height: 16.0),
-        ],
+    return _HomeBackgroundView(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: kToolbarHeight,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              userDataWidget(),
+              icons(),
+            ],
+          ),
+        ),
       ),
     );
   }

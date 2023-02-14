@@ -14,6 +14,7 @@ part './chat_text_body.dart';
 part './chat_photo_body.dart';
 part './system_chat_view.dart';
 part './chat_tool_tip.dart';
+part './chat_removed_body.dart';
 
 class ChatItemView extends StatelessWidget {
   const ChatItemView({
@@ -90,6 +91,11 @@ class ChatItemView extends StatelessWidget {
                 );
               case ChatType.system:
                 return const SizedBox();
+              case ChatType.removed:
+                final removedChat = chat as RemovedChat;
+                return _ChatRemovedBody(
+                  chat: removedChat,
+                );
             }
           },
         ),

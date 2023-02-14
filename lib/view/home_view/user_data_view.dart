@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:wurigiri/consts/const.dart';
-import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/user.dart';
 import 'package:wurigiri/widget/head_photo.dart';
 

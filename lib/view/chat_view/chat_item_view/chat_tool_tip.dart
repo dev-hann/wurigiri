@@ -74,6 +74,9 @@ class _ChatToolTipState extends State<ChatToolTip> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
+        if (widget.chat.type == ChatType.removed) {
+          return;
+        }
         widget.controller.hideToolTip();
         overlayEntry = OverlayEntry(
           builder: (_) {

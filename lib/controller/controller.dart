@@ -18,13 +18,14 @@ abstract class Controller<T extends Repo> extends GetxController {
     _inited = true;
   }
 
+  @Deprecated("Will be deprecated")
   static Future<T> put<T extends Controller>(T controller) async {
     await controller.init();
     return Get.put<T>(controller);
   }
 
-  Future<T> loadingOverlay<T>({
-    required Future<T> Function() asyncFunction,
+  Future loadingOverlay({
+    required Future Function() asyncFunction,
   }) {
     return Get.showOverlay(
       asyncFunction: asyncFunction,

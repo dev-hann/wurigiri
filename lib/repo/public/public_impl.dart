@@ -5,6 +5,7 @@ class PublicImpl extends PublicRepo {
   final String publicID;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final publicCollection = "public";
+  final Service service = Service();
 
   @override
   Future init() async {}
@@ -17,7 +18,7 @@ class PublicImpl extends PublicRepo {
 
   @override
   Stream<Map<String, dynamic>> get publicStream =>
-      document(publicID).snapshots().map(
+      service.publicRef(publicID).snapshots().map(
         (event) {
           final data = event.data();
           if (data == null) {
