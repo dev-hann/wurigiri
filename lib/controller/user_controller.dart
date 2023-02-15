@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/user.dart';
@@ -11,8 +12,9 @@ class UserController extends Controller<UserRepo> {
   );
 
   late User user;
-  String get publicID => user.publicID;
   late User other;
+
+  String get publicID => user.publicID;
 
   Future reqeustOther() async {
     final otherData = await requestUser(user.otherID);
@@ -29,14 +31,12 @@ class UserController extends Controller<UserRepo> {
     return User.fromMap(userData);
   }
 
-  static String userViewID = "userViewID";
-
   Future updateUser(
     User newUser, {
     bool withServer = false,
   }) async {
     user = newUser;
-    update([userViewID]);
+    update();
     if (withServer) {
       await repo.updateUser(
         id: newUser.id,

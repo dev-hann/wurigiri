@@ -2,22 +2,16 @@ library home_view;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wurigiri/controller/chat_controller.dart';
-import 'package:wurigiri/controller/feed_controller.dart';
-import 'package:wurigiri/controller/file_controller.dart';
-import 'package:wurigiri/controller/notify_controller.dart';
+import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
-import 'package:wurigiri/repo/chat/chat_repo.dart';
-import 'package:wurigiri/repo/feed/feed_repo.dart';
-import 'package:wurigiri/repo/file/file_repo.dart';
-import 'package:wurigiri/repo/notify/notify_repo.dart';
-import 'package:wurigiri/repo/public/public_repo.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
+import 'package:wurigiri/view/home_view/home_view_model.dart';
 import 'package:wurigiri/view/home_view/user_data_view.dart';
 import 'package:wurigiri/view/setting_view/setting_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
+import 'package:wurigiri/widget/glass_box.dart';
 
 part './home_background_view.dart';
 
@@ -37,57 +31,76 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final HomeViewModel viewModel = HomeViewModel();
   @override
   void initState() {
-    final userController = UserController.find();
-    final publicID = userController.publicID;
-    userController.reqeustOther();
-    Get.put(ChatController(ChatImpl(publicID))).init();
-    Get.put(PublicController(PublicImpl(publicID))).init();
-    Get.put(FileController(FileImpl())).init();
-    Get.put(FeedController(FeedImpl(publicID))).init();
-    Get.put(NotifyController(NotifyImpl()));
     super.initState();
+    viewModel.init();
   }
 
   Widget userDataWidget() {
-    return GetBuilder<UserController>(
-      id: UserController.userViewID,
-      builder: (controller) {
-        return UserDataView(
-          me: controller.user,
-          other: controller.other,
-          onTapUser: (user) {
-            Get.to(UserDetailView(user: user));
-          },
-        );
-      },
+    return WGlassBox(
+      child: GetBuilder<UserController>(
+        builder: (controller) {
+          return UserDataView(
+            me: controller.user,
+            other: controller.other,
+            onTapUser: (user) {
+              Get.to(UserDetailView(user: user));
+            },
+          );
+        },
+      ),
     );
   }
 
   Widget icons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          onPressed: () {
-            Get.to(const FeedView());
-          },
-          icon: const Icon(Icons.history),
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: WGlassBox(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                Get.to(const FeedView());
+              },
+              icon: const Icon(Icons.history),
+            ),
+            const SizedBox(width: 8.0),
+            IconButton(
+              onPressed: () {
+                Get.to(const ChatView());
+              },
+              icon: const Icon(Icons.chat),
+            ),
+            const SizedBox(width: 8.0),
+          ],
         ),
-        const SizedBox(width: 8.0),
+      ),
+    );
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      actions: [
         IconButton(
           onPressed: () {
-            Get.to(const ChatView());
+            viewModel.updateBackgroundPhoto();
           },
-          icon: const Icon(Icons.chat),
+          icon: const Icon(
+            Icons.photo,
+            color: Colors.white,
+          ),
         ),
-        const SizedBox(width: 8.0),
         IconButton(
           onPressed: () {
-            Get.to(const SettingView());
+            Get.to(SettingView());
           },
-          icon: const Icon(Icons.settings),
+          icon: const Icon(
+            Icons.settings,
+            color: Colors.white,
+          ),
         ),
       ],
     );
@@ -95,23 +108,27 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return _HomeBackgroundView(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: kToolbarHeight,
+    return GetBuilder<PublicController>(
+      builder: (controller) {
+        return _HomeBackgroundView(
+          url: controller.public.mainPhoto,
+          child: Scaffold(
+            appBar: appBar(),
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(),
+                  // userDataWidget(),
+                  icons(),
+                ],
+              ),
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              userDataWidget(),
-              icons(),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

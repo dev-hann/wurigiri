@@ -7,7 +7,13 @@ class FileController extends Controller<FileRepo> {
 
   static FileController find() => Get.find<FileController>();
 
-  Future<String> uploadFile(String filePath) {
+  Future<String> uploadFile(
+    String filePath, {
+    String? removePath,
+  }) async {
+    if (removePath != null && removePath.isNotEmpty) {
+      removeFile(removePath);
+    }
     return repo.uploadFile(filePath);
   }
 

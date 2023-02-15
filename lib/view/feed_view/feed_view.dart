@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
-import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view.dart';
 import 'package:wurigiri/view/feed_view/feed_item_view.dart';
+import 'package:wurigiri/view/feed_view/feed_view_model.dart';
 import 'package:wurigiri/widget/loading.dart';
 
 class FeedView extends StatefulWidget {
@@ -14,13 +14,12 @@ class FeedView extends StatefulWidget {
 }
 
 class _FeedViewState extends State<FeedView> {
-  final feedController = FeedController.find();
-  final publicController = PublicController.find();
+  final FeedViewModel viewModel = FeedViewModel();
 
   @override
   void initState() {
     super.initState();
-    feedController.refreshFeedList();
+    viewModel.init();
   }
 
   AppBar appBar() {
@@ -33,9 +32,7 @@ class _FeedViewState extends State<FeedView> {
             if (newFeed == null) {
               return;
             }
-            await feedController.updateFeed(
-              newFeed: newFeed,
-            );
+            viewModel.updateFeed(newFeed);
           },
           icon: const Icon(Icons.edit),
         ),
@@ -47,23 +44,25 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: GetBuilder<FeedController>(builder: (controller) {
-        final list = controller.feedList;
-        if (list.isEmpty) {
-          return const WLoading();
-        }
-        return ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            return FeedItemView(
-              feed: list[index],
-              onTapRemove: (feedIndex) {
-                feedController.removeFeed(feedIndex);
-              },
-            );
-          },
-        );
-      }),
+      body: GetBuilder<FeedController>(
+        builder: (controller) {
+          final list = viewModel.feedList;
+          if (list.isEmpty) {
+            return const WLoading();
+          }
+          return ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              return FeedItemView(
+                feed: list[index],
+                onTapRemove: (feedIndex) {
+                  viewModel.removeFeed(feedIndex);
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -29,5 +29,6 @@ class PublicController extends Controller<PublicRepo> {
 
   Future updatePublic(Public newPublic) async {
     await repo.updatePublic(newPublic.toMap());
+    update();
   }
 }

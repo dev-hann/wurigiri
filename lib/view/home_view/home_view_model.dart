@@ -11,26 +11,43 @@ import 'package:wurigiri/repo/feed/feed_repo.dart';
 import 'package:wurigiri/repo/file/file_repo.dart';
 import 'package:wurigiri/repo/notify/notify_repo.dart';
 import 'package:wurigiri/repo/public/public_repo.dart';
+import 'package:wurigiri/widget/image_picker.dart';
 
 class HomeViewModel {
   final userController = UserController.find();
+  late final FileController fileController;
+  late final PublicController publicController;
   void init() async {
     final publicID = userController.publicID;
     userController.reqeustOther();
-    await Controller.put<ChatController>(
+    Controller.put(
       ChatController(ChatImpl(publicID)),
     );
-    await Controller.put<FileController>(
-      FileController(FileImpl()),
-    );
-    await Controller.put<PublicController>(
-      PublicController(PublicImpl(publicID)),
-    );
-    Get.put(
+    Controller.put(
       FeedController(FeedImpl(publicID)),
     );
-    Get.put(
-      NotifyController(NotifyImpl()),
+    publicController = await Controller.put(
+      PublicController(PublicImpl(publicID)),
     );
+    fileController = await Controller.put(
+      FileController(FileImpl()),
+    );
+    Get.put(NotifyController(NotifyImpl()));
+  }
+
+  Future<void> updateBackgroundPhoto() async {
+    final res = await WImagePicker.pickImage();
+    if (res == null) {
+      return;
+    }
+    Controller.overlayLoading(asyncFunction: () async {
+      final public = publicController.public;
+      final url = await fileController.uploadFile(
+        res.path,
+        removePath: public.mainPhoto,
+      );
+      await publicController.updatePublic(public.copyWith(mainPhoto: url));
+      return true;
+    });
   }
 }

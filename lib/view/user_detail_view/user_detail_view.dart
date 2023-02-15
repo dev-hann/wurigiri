@@ -100,7 +100,6 @@ class _UserDetailViewState extends State<UserDetailView> {
       child: Scaffold(
         appBar: appBar(),
         body: GetBuilder<UserController>(
-          id: UserController.userViewID,
           builder: (context) {
             return Align(
               alignment: const Alignment(0, -0.4),

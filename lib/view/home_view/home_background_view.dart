@@ -2,15 +2,30 @@ part of home_view;
 
 class _HomeBackgroundView extends StatelessWidget {
   const _HomeBackgroundView({
-    super.key,
+    required this.url,
     required this.child,
   });
+  final String url;
   final Widget child;
 
   Widget emptyView() {
-    return const ColoredBox(
-      color: Colors.white,
-      child: SizedBox.expand(),
+    return ShaderMask(
+      blendMode: BlendMode.srcATop,
+      shaderCallback: (Rect bounds) {
+        return LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.3),
+            Colors.transparent,
+            Colors.black.withOpacity(0.1),
+          ],
+        ).createShader(bounds);
+      },
+      child: ColoredBox(
+        color: WColor.pink,
+        child: const SizedBox.expand(),
+      ),
     );
   }
 
@@ -18,13 +33,13 @@ class _HomeBackgroundView extends StatelessWidget {
     return ShaderMask(
       blendMode: BlendMode.srcATop,
       shaderCallback: (Rect bounds) {
-        return const LinearGradient(
+        return LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white,
+            Colors.black.withOpacity(0.4),
             Colors.transparent,
-            Colors.white,
+            Colors.black.withOpacity(0.6),
           ],
         ).createShader(bounds);
       },
@@ -37,20 +52,12 @@ class _HomeBackgroundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PublicController>(
-      builder: (controller) {
-        final url = controller.public.mainPhoto;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            GestureDetector(
-              onLongPress: () {},
-              child: url.isEmpty ? emptyView() : imageView(url),
-            ),
-            child,
-          ],
-        );
-      },
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        url.isEmpty ? emptyView() : imageView(url),
+        child,
+      ],
     );
   }
 }

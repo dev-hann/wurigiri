@@ -30,11 +30,11 @@ class UserDetailViewModel {
     }
     userController.loadingOverlay(
       asyncFunction: () async {
-        final headPhotoURL = await fileController.uploadFile(res.path);
         final userHeadPhoto = user.headPhoto;
-        if (userHeadPhoto.isNotEmpty) {
-          fileController.removeFile(userHeadPhoto);
-        }
+        final headPhotoURL = await fileController.uploadFile(
+          res.path,
+          removePath: userHeadPhoto,
+        );
         final newUser = user.copyWith(
           headPhoto: headPhotoURL,
         );

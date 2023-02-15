@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 
@@ -15,8 +16,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Firebase.initializeApp();
-  Get.put(UserController(UserImpl()));
-  Get.put(LoginController(LoginImpl()));
+  await Controller.put(UserController(UserImpl()));
+  await Controller.put(LoginController(LoginImpl()));
   runApp(const MyApp());
 }
 
@@ -38,9 +39,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future login() async {
-    await userController.init();
-    await loginController.init();
-
     final deviceID = await loginController.loadDeviceID();
     final user = await userController.requestUser(deviceID);
     if (user != null) {
