@@ -1,12 +1,13 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view/feed_edit_view.dart';
-import 'package:wurigiri/view/feed_view/feed_item_view.dart';
+import 'package:wurigiri/view/feed_view/feed_item_view/feed_item_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view_model.dart';
 import 'package:wurigiri/widget/background.dart';
 import 'package:wurigiri/widget/loading.dart';
+import 'package:wurigiri/widget/photo_view/photo_view.dart';
 
 class FeedView extends StatefulWidget {
   const FeedView({super.key});
@@ -32,17 +33,24 @@ class _FeedViewState extends State<FeedView> {
           onPressed: () async {},
           icon: const Icon(Icons.search),
         ),
-        IconButton(
-          onPressed: () async {
-            final newFeed = await Get.to(FeedEditView());
-            if (newFeed == null) {
-              return;
-            }
-            viewModel.updateFeed(newFeed);
-          },
-          icon: const Icon(Icons.edit),
-        ),
       ],
+    );
+  }
+
+  Widget newFeedButton() {
+    return FloatingActionButton(
+      backgroundColor: Colors.white,
+      onPressed: () async {
+        final newFeed = await Get.to(FeedEditView());
+        if (newFeed == null) {
+          return;
+        }
+        viewModel.updateFeed(newFeed);
+      },
+      child: Icon(
+        Icons.edit,
+        color: WColor.black,
+      ),
     );
   }
 
@@ -50,7 +58,7 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     return WBackground(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        floatingActionButton: newFeedButton(),
         backgroundColor: Colors.transparent,
         appBar: appBar(),
         body: Padding(
@@ -61,25 +69,34 @@ class _FeedViewState extends State<FeedView> {
               if (list.isEmpty) {
                 return const WLoading();
               }
-              return Align(
-                alignment: const Alignment(0, -0.4),
-                child: CarouselSlider.builder(
-                  options: CarouselOptions(
-                    aspectRatio: 0.8,
-                    enlargeCenterPage: true,
-                    enlargeFactor: 0.2,
-                    viewportFraction: 0.8,
-                    enableInfiniteScroll: true,
-                  ),
-                  itemCount: list.length,
-                  itemBuilder: (context, index, realIndex) {
-                    final feed = list[index];
-                    return FeedItemView(
-                      feed: feed,
-                      onTapRemove: (feedIndex) {},
-                    );
-                  },
-                ),
+              return PageView.builder(
+                controller: viewModel.pageController,
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final feed = list[index];
+                  return Align(
+                    alignment: const Alignment(0, -0.4),
+                    child: AnimatedScale(
+                      duration: const Duration(milliseconds: 300),
+                      scale: viewModel.currentPage == index ? 1.1 : 1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: FeedItemView(
+                          feed: feed,
+                          onTapRemove: (index) {},
+                          onTaPhoto: (index) {
+                            Get.to(
+                              WPhotoView(
+                                photoList: feed.photoList,
+                                initIndex: index,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
               );
             },
           ),

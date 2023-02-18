@@ -20,13 +20,18 @@ class FeedEditViewModel {
   }
 
   Future<Feed> updateFeed() async {
-    return Controller.overlayLoading(
+    return Controller.overlayLoading<Feed>(
       asyncFunction: () async {
+        final List<String> urlList = [];
+        for (final photo in photoList) {
+          final url = await fileController.uploadFile(photo.path);
+          urlList.add(url);
+        }
         return Feed(
           title: titleController.text,
           dateTime: DateTime.now(),
           desc: descController.text,
-          photoList: [],
+          photoList: urlList,
         );
       },
     );

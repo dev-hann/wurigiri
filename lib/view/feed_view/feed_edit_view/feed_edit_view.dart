@@ -1,12 +1,11 @@
-import 'dart:io';
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reorderables/reorderables.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
 import 'package:wurigiri/model/w_image.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view/feed_edit_view_model.dart';
 import 'package:wurigiri/widget/background.dart';
+import 'package:badges/badges.dart' as badges;
 
 class FeedEditView extends StatelessWidget {
   FeedEditView({super.key});
@@ -17,10 +16,11 @@ class FeedEditView extends StatelessWidget {
       actions: [
         IconButton(
           onPressed: () async {
+            FocusManager.instance.primaryFocus?.unfocus();
             final newFeed = await viewModel.updateFeed();
             Get.back(result: newFeed);
           },
-          icon: Icon(Icons.upload),
+          icon: const Icon(Icons.upload),
         ),
       ],
     );
@@ -29,21 +29,15 @@ class FeedEditView extends StatelessWidget {
   Widget titleView() {
     return TextField(
       controller: viewModel.titleController,
-      decoration: InputDecoration(
-        hintText: "title",
+      decoration: const InputDecoration(
+        hintText: "Aa",
+        border: InputBorder.none,
       ),
     );
   }
 
   Widget photoListView() {
-    Widget photoView(WImage image) {
-      return Card(
-        child: Image.memory(
-          image.thumbData,
-          fit: BoxFit.contain,
-        ),
-      );
-    }
+    final list = viewModel.photoList;
 
     Widget addIcon() {
       return Center(
@@ -61,23 +55,35 @@ class FeedEditView extends StatelessWidget {
       );
     }
 
-    return CarouselSlider(
-      options: CarouselOptions(
-        enableInfiniteScroll: false,
-        viewportFraction: 0.5,
-      ),
-      items: [
-        ...viewModel.photoList.map(photoView).toList(),
-        addIcon(),
+    final size = Get.width / 4;
+    return ReorderableWrap(
+      onReorder: (int oldIndex, int newIndex) {},
+      footer: addIcon(),
+      children: [
+        for (int index = 0; index < list.length; index++)
+          SizedBox.square(
+            dimension: size,
+            child: Card(
+              clipBehavior: Clip.hardEdge,
+              child: Image.memory(
+                list[index].thumbData,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
       ],
     );
   }
 
   Widget descView() {
     return TextField(
+      expands: true,
+      maxLines: null,
+      minLines: null,
       controller: viewModel.descController,
-      decoration: InputDecoration(
-        hintText: "Desc",
+      decoration: const InputDecoration(
+        hintText: "Desc..",
+        border: InputBorder.none,
       ),
     );
   }
@@ -90,12 +96,25 @@ class FeedEditView extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: appBar(),
-            body: Column(
-              children: [
-                titleView(),
-                photoListView(),
-                descView(),
-              ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  photoListView(),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        titleView(),
+                        const Divider(height: 1),
+                        SizedBox(
+                          height: Get.height / 3,
+                          child: descView(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },

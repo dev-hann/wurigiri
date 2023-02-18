@@ -36,9 +36,7 @@ class WImagePicker {
     List<CropAspectRatioPreset> aspectRatioPresets = const [],
     CompressOption option = const CompressOption.feed(),
   }) async {
-    final file = await _picker.pickImage(
-      source: source,
-    );
+    final file = await _picker.pickImage(source: source, imageQuality: 70);
     if (file == null) {
       return null;
     }

@@ -24,10 +24,10 @@ abstract class Controller<T extends Repo> extends GetxController {
     return c;
   }
 
-  static overlayLoading({
-    required Future Function() asyncFunction,
+  static Future<T> overlayLoading<T>({
+    required Future<T> Function() asyncFunction,
   }) {
-    return Get.showOverlay(
+    return Get.showOverlay<T>(
       asyncFunction: asyncFunction,
       loadingWidget: const WLoading(),
     );
