@@ -35,19 +35,39 @@ class HomeViewModel {
     Get.put(NotifyController(NotifyImpl()));
   }
 
+  String get backgroundURL => publicController.public.mainPhoto;
+
   Future<void> updateBackgroundPhoto() async {
     final res = await WImagePicker.pickImage();
     if (res == null) {
       return;
     }
-    Controller.overlayLoading(asyncFunction: () async {
-      final public = publicController.public;
-      final url = await fileController.uploadFile(
-        res.path,
-        removePath: public.mainPhoto,
-      );
-      await publicController.updatePublic(public.copyWith(mainPhoto: url));
-      return true;
-    });
+    Controller.overlayLoading(
+      asyncFunction: () async {
+        final public = publicController.public;
+        final url = await fileController.uploadFile(
+          res.path,
+          removePath: public.mainPhoto,
+        );
+        await publicController.updatePublic(
+          public.copyWith(mainPhoto: url),
+        );
+        return true;
+      },
+    );
+  }
+
+  void removeBackgroundPhoto() {
+    Controller.overlayLoading(
+      asyncFunction: () async {
+        final public = publicController.public;
+        if (public.mainPhoto.isNotEmpty) {
+          fileController.removeFile(public.mainPhoto);
+        }
+        await publicController.updatePublic(
+          public.copyWith(mainPhoto: ""),
+        );
+      },
+    );
   }
 }

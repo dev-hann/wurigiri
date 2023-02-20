@@ -70,6 +70,8 @@ class _FeedViewState extends State<FeedView> {
                 return const WLoading();
               }
               return PageView.builder(
+                physics: const BouncingScrollPhysics(),
+                pageSnapping: false,
                 controller: viewModel.pageController,
                 itemCount: list.length,
                 itemBuilder: (context, index) {

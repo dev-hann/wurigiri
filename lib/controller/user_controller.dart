@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/user.dart';
@@ -21,6 +20,13 @@ class UserController extends Controller<UserRepo> {
     if (otherData != null) {
       other = otherData;
     }
+  }
+
+  User loadUser(String index) {
+    if (user.id == index) {
+      return user;
+    }
+    return other;
   }
 
   Future<User?> requestUser(String deviceID) async {

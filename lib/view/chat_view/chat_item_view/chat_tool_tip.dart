@@ -130,53 +130,82 @@ class _ChatOverlay extends StatelessWidget {
   final VoidCallback onTapReply;
   final AxisDirection direction;
 
-  Offset calculateOffset() {
-    final box = childContext.findRenderObject() as RenderBox;
-    final offset = box.localToGlobal(Offset.zero);
-    return Offset(
-      isMine ? offset.dx : kToolbarHeight,
-      offset.dy - kToolbarHeight,
-    );
-  }
-
   Widget button({
     required String text,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(text),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(text),
+          ),
+          const Icon(Icons.abc),
+        ],
+      ),
+    );
+  }
+
+  Widget menuWidget() {
+    final box = childContext.findRenderObject() as RenderBox;
+    final chatBoxHeight = box.size.height;
+    final offset = box.localToGlobal(Offset.zero);
+    final height = Get.height;
+    final boxTop = height - offset.dy;
+    final boxBottom = offset.dy + chatBoxHeight;
+
+    Widget menu = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        textDirection: !isMine ? TextDirection.ltr : TextDirection.rtl,
+        children: [
+          IntrinsicHeight(
+            child: SizedBox(
+              width: Get.width * 0.7,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      button(text: "답변", onTap: onTapReply),
+                      const Divider(),
+                      button(text: "삭제", onTap: onTapRemove),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (offset.dy > 200.0) {
+      return Positioned.fill(
+        bottom: boxTop,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: menu,
         ),
+      );
+    }
+    return Positioned.fill(
+      top: boxBottom,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: menu,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final offset = calculateOffset();
-    final buttonList = [
-      button(text: "삭제", onTap: onTapRemove),
-      button(text: "답변", onTap: onTapReply),
-    ];
     return GestureDetector(
       onTap: onTapCancel,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned.fromRect(
-            rect: Rect.fromLTWH(
-              offset.dx,
-              offset.dy,
-              kToolbarHeight * buttonList.length,
-              kToolbarHeight,
-            ),
-            child: Row(
-              children: buttonList,
-            ),
-          ),
+          menuWidget(),
         ],
       ),
     );

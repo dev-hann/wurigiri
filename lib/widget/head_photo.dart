@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:wurigiri/widget/image_view.dart';
 
 const defaultHeadPhotoSize = 100.0;
 
@@ -50,7 +51,7 @@ class WHeadPhoto extends StatelessWidget {
                 if (url.isEmpty) {
                   return emptyWidget();
                 }
-                return Image.network(url);
+                return WImageView(url);
               },
             ),
           ),

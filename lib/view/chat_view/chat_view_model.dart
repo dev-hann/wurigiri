@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
@@ -63,12 +64,14 @@ class ChatViewModel {
       text: text,
       replyIndex: replyChat?.index,
     );
+    replyChat = null;
     chatController.updateChat(newChat);
     textChatController.clear();
+    scrollToBottom();
   }
 
   void sendPhotoChat() async {
-    final image = await chatController.loadingOverlay(
+    final image = await Controller.overlayLoading(
       asyncFunction: () async {
         return await WImagePicker.pickImage();
       },
@@ -186,5 +189,41 @@ class ChatViewModel {
 
   void _disposeScrollController() {
     scrollController.removeListener(_scrollListener);
+  }
+
+  final Map<int, GlobalKey<ChatItemViewState>> _chatKeyMap = {};
+
+  GlobalKey chatKey(Chat chat) {
+    final index = chat.index;
+    final key = GlobalKey<ChatItemViewState>();
+    _chatKeyMap[index] = key;
+    return key;
+  }
+
+  void scrollToChat(Chat chat) {
+    final key = _chatKeyMap[chat.index];
+    if (key == null) {
+      return;
+    }
+    final context = key.currentContext;
+    if (context == null) {
+      return;
+    }
+
+    Scrollable.ensureVisible(
+      context,
+      duration: const Duration(milliseconds: 300),
+      alignment: 0.5,
+    ).then((value) => key.currentState!.shake());
+  }
+
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
+  }
+
+  void onTapReplyChat(Chat chat) {
+    scrollToChat(chat);
   }
 }

@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
-import 'package:wurigiri/model/w_image.dart';
 import 'package:wurigiri/view/feed_view/feed_edit_view/feed_edit_view_model.dart';
 import 'package:wurigiri/widget/background.dart';
-import 'package:badges/badges.dart' as badges;
 
 class FeedEditView extends StatelessWidget {
   FeedEditView({super.key});
   final FeedEditViewModel viewModel = FeedEditViewModel();
   AppBar appBar() {
     return AppBar(
-      title: Text("FeedEditView!!"),
+      title: const Text("FeedEditView!!"),
       actions: [
         IconButton(
           onPressed: () async {

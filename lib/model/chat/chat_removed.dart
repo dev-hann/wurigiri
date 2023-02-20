@@ -37,7 +37,7 @@ class RemovedChat extends Chat {
     final data = Map<String, dynamic>.from(map);
     return RemovedChat(
       senderIndex: data["senderIndex"],
-      dateTime: data["dateTime"],
+      dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
       data: data["data"],
     );
   }

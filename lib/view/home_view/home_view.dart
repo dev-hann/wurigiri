@@ -11,7 +11,9 @@ import 'package:wurigiri/view/home_view/user_data_view.dart';
 import 'package:wurigiri/view/setting_view/setting_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
 import 'package:wurigiri/widget/background.dart';
+import 'package:wurigiri/widget/bottom_sheet.dart';
 import 'package:wurigiri/widget/glass_box.dart';
+import 'package:wurigiri/widget/image_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -84,7 +86,35 @@ class _HomeViewState extends State<HomeView> {
       actions: [
         IconButton(
           onPressed: () {
-            viewModel.updateBackgroundPhoto();
+            final actionList = [
+              WBottomSheetButton(
+                text: "Select Photo",
+                onTap: () {
+                  viewModel.updateBackgroundPhoto();
+                  Get.back();
+                },
+              ),
+            ];
+            if (viewModel.backgroundURL.isNotEmpty) {
+              actionList.add(
+                WBottomSheetButton(
+                  text: "Remove Photo",
+                  isRed: true,
+                  onTap: () {
+                    viewModel.removeBackgroundPhoto();
+                    Get.back();
+                  },
+                ),
+              );
+            }
+            WBottomSheet(
+              actions: actionList,
+              cancelButton: WBottomSheetButton.cancel(
+                onTap: () {
+                  Get.back();
+                },
+              ),
+            ).show(context);
           },
           icon: const Icon(
             Icons.photo,
@@ -121,7 +151,7 @@ class _HomeViewState extends State<HomeView> {
           ],
         ).createShader(bounds);
       },
-      child: Image.network(
+      child: WImageView(
         url,
         fit: BoxFit.cover,
       ),
@@ -132,11 +162,12 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return GetBuilder<PublicController>(
       builder: (controller) {
+        final backgroundURL = controller.public.mainPhoto;
         return WBackground(
           child: Stack(
             fit: StackFit.expand,
             children: [
-              backgroundImg(controller.public.mainPhoto),
+              backgroundImg(backgroundURL),
               Scaffold(
                 appBar: appBar(),
                 backgroundColor: Colors.transparent,

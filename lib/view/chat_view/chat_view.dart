@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
@@ -58,6 +57,7 @@ class _ChatViewState extends State<ChatView> {
             maxLines: 3,
             minLines: 1,
             decoration: InputDecoration(
+              prefixIcon: replyChat != null ? const Icon(Icons.comment) : null,
               border: InputBorder.none,
               hintText: replyChat != null ? "답변쓰기" : "Aa",
             ),
@@ -75,7 +75,7 @@ class _ChatViewState extends State<ChatView> {
           children: [
             const Divider(height: 1),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ReplyChatView(
                 replyChat: replyChat,
                 onTapCancel: () {
@@ -83,21 +83,57 @@ class _ChatViewState extends State<ChatView> {
                 },
               ),
             ),
-            Row(
-              children: [
-                photoButton(replyChat),
-                Expanded(
-                  child: textField(replyChat),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    viewModel.sendTextChat();
-                  },
-                  icon: const Icon(Icons.send),
-                ),
-              ],
+            ColoredBox(
+              color: Colors.transparent,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  photoButton(replyChat),
+                  Expanded(
+                    child: textField(replyChat),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      viewModel.sendTextChat();
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
+                ],
+              ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Widget chatItem(Chat chat) {
+    return GetBuilder<ChatController>(
+      id: viewModel.chatViewID(chat),
+      builder: (_) {
+        final sender = viewModel.loadUser(chat.senderIndex);
+        final replyChat =
+            chat is TextChat ? viewModel.loadChat(chat.replyIndex) : null;
+        return ChatItemView(
+          key: viewModel.chatKey(chat),
+          chat: chat,
+          replyChat: replyChat,
+          toolTipController: viewModel.toolTipController,
+          sender: sender,
+          isRead: viewModel.isReadChat(chat),
+          isMine: viewModel.isMineChat(chat),
+          onTapHeadPhoto: () {
+            Get.to(UserDetailView(user: sender));
+          },
+          onTapToolTipRemove: () {
+            viewModel.onTapRemoveChat(chat);
+          },
+          onTapToolTipReply: () {
+            viewModel.updateReplyChat(chat);
+          },
+          onTapReply: (replyChat) {
+            viewModel.onTapReplyChat(replyChat);
+          },
         );
       },
     );
@@ -118,44 +154,22 @@ class _ChatViewState extends State<ChatView> {
             appBar: appBar(),
             body: GetBuilder<ChatController>(
               builder: (controller) {
-                final chatList = viewModel.chatList.reversed.toList();
+                final chatList = viewModel.chatList.toList();
                 return Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
+                      child: SingleChildScrollView(
                         controller: viewModel.scrollController,
-                        reverse: true,
-                        itemCount: chatList.length,
-                        itemBuilder: (context, index) {
-                          final chat = chatList[index];
-                          return GetBuilder<ChatController>(
-                            id: viewModel.chatViewID(chat),
-                            builder: (_) {
-                              final sender =
-                                  viewModel.loadUser(chat.senderIndex);
-                              final replyChat = chat is TextChat
-                                  ? viewModel.loadChat(chat.replyIndex)
-                                  : null;
-                              return ChatItemView(
-                                chat: chat,
-                                replyChat: replyChat,
-                                toolTipController: viewModel.toolTipController,
-                                sender: sender,
-                                isRead: viewModel.isReadChat(chat),
-                                isMine: viewModel.isMineChat(chat),
-                                onTapHeadPhoto: () {
-                                  Get.to(UserDetailView(user: sender));
-                                },
-                                onTapRemove: () {
-                                  viewModel.onTapRemoveChat(chat);
-                                },
-                                onTapReply: () {
-                                  viewModel.updateReplyChat(chat);
-                                },
-                              );
-                            },
-                          );
-                        },
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 40.0),
+                            for (int index = 0;
+                                index < chatList.length;
+                                index++)
+                              chatItem(chatList[index]),
+                          ],
+                        ),
                       ),
                     ),
                     bottom(),
