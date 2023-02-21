@@ -4,8 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:wurigiri/model/feed.dart';
 import 'package:wurigiri/util/time_format.dart';
-import 'package:wurigiri/widget/image_view.dart';
-part './feed_photo_view/feed_photo_view.dart';
+import 'package:wurigiri/widget/image_layout.dart';
 
 class FeedItemView extends StatefulWidget {
   const FeedItemView({
@@ -46,14 +45,16 @@ class _FeedItemViewState extends State<FeedItemView>
   }
 
   Widget photoView() {
-    return _FeedPhotoView(
-      widget.feed.photoList,
+    return WImageLayOut(
+      imageList: widget.feed.photoList
+          .map((e) => CachedNetworkImageProvider(e))
+          .toList(),
       onTapPhoto: widget.onTaPhoto,
     );
   }
 
   Widget emojiWidget() {
-    return Icon(Icons.favorite_border);
+    return const Icon(Icons.favorite_border);
   }
 
   Widget descText() {

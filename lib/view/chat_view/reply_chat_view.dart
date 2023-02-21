@@ -37,16 +37,18 @@ class ReplyChatView extends StatelessWidget {
         );
         break;
       case ChatType.photo:
+        final photoChat = replyChat as PhotoChat;
+        final photoList = photoChat.photoList;
         header = Padding(
           padding: const EdgeInsets.only(right: 8.0),
           child: CachedNetworkImage(
-            imageUrl: (replyChat as PhotoChat).photoURL,
+            imageUrl: photoList.first,
             width: 50.0,
             height: 50.0,
             fit: BoxFit.cover,
           ),
         );
-        body = const Text("사진");
+        body = Text("사진 ${photoList.length}장");
         break;
       case ChatType.system:
       case ChatType.removed:

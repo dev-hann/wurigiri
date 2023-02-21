@@ -1,5 +1,6 @@
 library chat;
 
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';

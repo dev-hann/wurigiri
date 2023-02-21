@@ -1,8 +1,5 @@
 library chat_item_view;
 
-import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
@@ -10,6 +7,7 @@ import 'package:wurigiri/model/chat/chat.dart';
 import 'package:wurigiri/model/user.dart';
 import 'package:wurigiri/view/chat_view/reply_chat_view.dart';
 import 'package:wurigiri/widget/head_photo.dart';
+import 'package:wurigiri/widget/image_layout.dart';
 import 'package:wurigiri/widget/loading.dart';
 
 part './chat_text_body.dart';
@@ -31,6 +29,7 @@ class ChatItemView extends StatefulWidget {
     required this.onTapToolTipRemove,
     required this.onTapToolTipReply,
     required this.onTapReply,
+    required this.onTapPhoto,
   });
   final User sender;
   final Chat chat;
@@ -43,6 +42,7 @@ class ChatItemView extends StatefulWidget {
   final VoidCallback onTapToolTipRemove;
   final VoidCallback onTapToolTipReply;
   final Function(Chat replyChat) onTapReply;
+  final Function(int index) onTapPhoto;
 
   @override
   State<ChatItemView> createState() => ChatItemViewState();
@@ -74,16 +74,19 @@ class ChatItemViewState extends State<ChatItemView>
     if (widget.isMine) {
       return const SizedBox();
     }
-    return GestureDetector(
-      onTap: widget.onTapHeadPhoto,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          WHeadPhoto(
-            widget.sender.headPhoto,
-            size: 48.0,
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: GestureDetector(
+        onTap: widget.onTapHeadPhoto,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            WHeadPhoto(
+              widget.sender.headPhoto,
+              size: 48.0,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -115,6 +118,7 @@ class ChatItemViewState extends State<ChatItemView>
                 return _ChatPhotoBody(
                   photoChat,
                   width: maxWith,
+                  onTapPhoto: widget.onTapPhoto,
                 );
               case ChatType.system:
                 return const SizedBox();
@@ -134,13 +138,14 @@ class ChatItemViewState extends State<ChatItemView>
     if (!widget.isMine) {
       return const SizedBox();
     }
-    return Text(widget.isRead ? "Read" : "");
+    return Text(widget.isRead ? "읽음" : "");
   }
 
   Widget tailing() {
     final data = widget.chat.dateTime;
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         readText(),
         Text(intl.DateFormat("HH:mm").format(data)),
@@ -160,6 +165,7 @@ class ChatItemViewState extends State<ChatItemView>
       child: IntrinsicHeight(
         child: Row(
           textDirection: widget.isMine ? TextDirection.rtl : TextDirection.ltr,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             headPhoto(),
             AnimatedBuilder(

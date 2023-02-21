@@ -61,6 +61,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         cardTheme: CardTheme(
+          margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),

@@ -4,18 +4,18 @@ class PhotoChat extends Chat {
   PhotoChat({
     required super.senderIndex,
     required super.dateTime,
-    required this.photoURL,
-    required this.thumbData,
+    required this.photoList,
+    required this.thumbList,
   }) : super(typeIndex: ChatType.photo.index);
 
-  final String photoURL;
-  final Uint8List thumbData;
+  final List<String> photoList;
+  final List<Uint8List> thumbList;
   @override
   List<Object?> get props => [
         index,
         dateTime,
         senderIndex,
-        photoURL,
+        photoList,
       ];
 
   factory PhotoChat.fromMap(dynamic map) {
@@ -23,9 +23,9 @@ class PhotoChat extends Chat {
     return PhotoChat(
       senderIndex: data["senderIndex"],
       dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
-      photoURL: data["photoURL"],
-      thumbData: Uint8List.fromList(
-        List<int>.from(data["thumbData"]),
+      photoList: List<String>.from(data["photoURL"]),
+      thumbList: List<Uint8List>.from(
+        List<String>.from(data["thumbList"]).map((e) => base64Decode(e)),
       ),
     );
   }
@@ -35,23 +35,22 @@ class PhotoChat extends Chat {
       "typeIndex": typeIndex,
       "senderIndex": senderIndex,
       "dateTime": dateTime.millisecondsSinceEpoch,
-      "photoURL": photoURL,
-      "thumbData": thumbData.toList(),
+      "photoURL": photoList.toList(),
+      "thumbList": thumbList.map((e) => base64Encode(e)).toList(),
     };
   }
 
   PhotoChat copyWith({
     String? senderIndex,
     DateTime? dateTime,
-    String? photoURL,
-    bool? isDeleted,
-    Uint8List? thumbData,
+    List<String>? photoList,
+    List<Uint8List>? thumbList,
   }) {
     return PhotoChat(
       senderIndex: senderIndex ?? this.senderIndex,
       dateTime: dateTime ?? this.dateTime,
-      photoURL: photoURL ?? this.photoURL,
-      thumbData: thumbData ?? this.thumbData,
+      photoList: photoList ?? this.photoList,
+      thumbList: thumbList ?? this.thumbList,
     );
   }
 }

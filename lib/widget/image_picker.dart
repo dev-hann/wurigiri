@@ -13,7 +13,9 @@ class WImagePicker {
     ImageSource source = ImageSource.gallery,
     CompressOption option = const CompressOption.feed(),
   }) async {
-    final itemList = await _picker.pickMultiImage();
+    final itemList = await _picker.pickMultiImage(
+      imageQuality: 30,
+    );
     if (itemList.isEmpty) {
       return [];
     }
@@ -36,7 +38,10 @@ class WImagePicker {
     List<CropAspectRatioPreset> aspectRatioPresets = const [],
     CompressOption option = const CompressOption.feed(),
   }) async {
-    final file = await _picker.pickImage(source: source, imageQuality: 70);
+    final file = await _picker.pickImage(
+      source: source,
+      imageQuality: 30,
+    );
     if (file == null) {
       return null;
     }
@@ -89,7 +94,7 @@ class CompressOption {
         minHeight = 50;
 
   const CompressOption.feed()
-      : quilty = 80,
-        minWidth = 500,
-        minHeight = 500;
+      : quilty = 100,
+        minWidth = 400,
+        minHeight = 400;
 }

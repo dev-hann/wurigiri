@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wurigiri/widget/image_view.dart';
 
 class WPhotoView extends StatefulWidget {
@@ -67,7 +69,6 @@ class _WPhotoViewState extends State<WPhotoView> {
         tapBuilder(
           child: AppBar(
             backgroundColor: Colors.grey.withOpacity(0.4),
-            title: Text("!!@@"),
           ),
         ),
       ],
@@ -76,30 +77,35 @@ class _WPhotoViewState extends State<WPhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          PageView.builder(
-            controller: pageController,
-            itemCount: widget.photoList.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  _tapNotifier.value = !_tapNotifier.value;
-                },
-                child: _PageImage(
-                  url: widget.photoList[index],
-                ),
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: appBar(),
-          ),
-        ],
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        Get.back();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            PageView.builder(
+              controller: pageController,
+              itemCount: widget.photoList.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    _tapNotifier.value = !_tapNotifier.value;
+                  },
+                  child: _PageImage(
+                    url: widget.photoList[index],
+                  ),
+                );
+              },
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: appBar(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -122,7 +128,7 @@ class _PageImageState extends State<_PageImage>
     super.build(context);
     return InteractiveViewer(
       child: WImageView(
-        widget.url,
+        CachedNetworkImageProvider(widget.url),
       ),
     );
   }

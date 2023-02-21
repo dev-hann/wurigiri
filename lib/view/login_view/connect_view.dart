@@ -81,7 +81,7 @@ class ConnectView extends StatelessWidget {
                     newUser,
                     withServer: true,
                   );
-                  Get.to(const HomeView());
+                  Get.offAll(const HomeView());
                 },
                 child: const Text("Connect"),
               ),
@@ -102,7 +102,7 @@ class ConnectView extends StatelessWidget {
                       withServer: true,
                     );
                     await loginController.connected(connection.publicID);
-                    Get.to(const HomeView());
+                    Get.offAll(const HomeView());
                   }
                 },
                 child: const Text("Invite"),

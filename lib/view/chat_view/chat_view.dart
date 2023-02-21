@@ -6,6 +6,7 @@ import 'package:wurigiri/view/chat_view/chat_item_view/chat_item_view.dart';
 import 'package:wurigiri/view/chat_view/chat_view_model.dart';
 import 'package:wurigiri/view/chat_view/reply_chat_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
+import 'package:wurigiri/widget/photo_view/photo_view.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -30,7 +31,7 @@ class _ChatViewState extends State<ChatView> {
 
   AppBar appBar() {
     return AppBar(
-      title: const Text("ChatView"),
+      backgroundColor: Colors.transparent,
     );
   }
 
@@ -48,18 +49,23 @@ class _ChatViewState extends State<ChatView> {
     }
 
     Widget textField(Chat? replyChat) {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: TextField(
-            controller: viewModel.textChatController,
-            textInputAction: TextInputAction.newline,
-            maxLines: 3,
-            minLines: 1,
-            decoration: InputDecoration(
-              prefixIcon: replyChat != null ? const Icon(Icons.comment) : null,
-              border: InputBorder.none,
-              hintText: replyChat != null ? "답변쓰기" : "Aa",
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextField(
+              controller: viewModel.textChatController,
+              textInputAction: TextInputAction.newline,
+              maxLines: 3,
+              minLines: 1,
+              decoration: InputDecoration(
+                isDense: true,
+                prefixIcon:
+                    replyChat != null ? const Icon(Icons.comment) : null,
+                border: InputBorder.none,
+                hintText: replyChat != null ? "답변쓰기" : "Aa",
+              ),
             ),
           ),
         ),
@@ -134,6 +140,15 @@ class _ChatViewState extends State<ChatView> {
           onTapReply: (replyChat) {
             viewModel.onTapReplyChat(replyChat);
           },
+          onTapPhoto: (index) {
+            final photoChat = chat as PhotoChat;
+            Get.to(
+              WPhotoView(
+                photoList: photoChat.photoList,
+                initIndex: index,
+              ),
+            );
+          },
         );
       },
     );
@@ -152,6 +167,7 @@ class _ChatViewState extends State<ChatView> {
           bottom: false,
           child: Scaffold(
             appBar: appBar(),
+            extendBodyBehindAppBar: true,
             body: GetBuilder<ChatController>(
               builder: (controller) {
                 final chatList = viewModel.chatList.toList();
@@ -159,11 +175,12 @@ class _ChatViewState extends State<ChatView> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
+                        reverse: true,
                         controller: viewModel.scrollController,
                         physics: const BouncingScrollPhysics(),
                         child: Column(
                           children: [
-                            const SizedBox(height: 40.0),
+                            const SizedBox(height: 100),
                             for (int index = 0;
                                 index < chatList.length;
                                 index++)

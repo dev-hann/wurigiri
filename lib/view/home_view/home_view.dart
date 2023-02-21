@@ -1,5 +1,6 @@
 library home_view;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/public_controller.dart';
@@ -152,7 +153,7 @@ class _HomeViewState extends State<HomeView> {
         ).createShader(bounds);
       },
       child: WImageView(
-        url,
+        CachedNetworkImageProvider(url),
         fit: BoxFit.cover,
       ),
     );

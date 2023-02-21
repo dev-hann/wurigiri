@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:wurigiri/widget/image_view.dart';
@@ -51,7 +52,9 @@ class WHeadPhoto extends StatelessWidget {
                 if (url.isEmpty) {
                   return emptyWidget();
                 }
-                return WImageView(url);
+                return WImageView(
+                  CachedNetworkImageProvider(url),
+                );
               },
             ),
           ),

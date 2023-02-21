@@ -1,12 +1,13 @@
-part of feed_item_view;
+import 'package:flutter/material.dart';
+import 'package:wurigiri/widget/image_view.dart';
 
-class _FeedPhotoView extends StatelessWidget {
-  const _FeedPhotoView(
-    this.urlList, {
+class WImageLayOut extends StatelessWidget {
+  const WImageLayOut({
+    super.key,
+    required this.imageList,
     required this.onTapPhoto,
   });
-
-  final List<String> urlList;
+  final List<ImageProvider> imageList;
   final Function(int index) onTapPhoto;
 
   Widget image(
@@ -19,7 +20,7 @@ class _FeedPhotoView extends StatelessWidget {
         onTapPhoto(index);
       },
       child: WImageView(
-        urlList[index],
+        imageList[index],
         width: width,
         height: height,
         fit: BoxFit.cover,
@@ -196,7 +197,7 @@ class _FeedPhotoView extends StatelessWidget {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(urlList[3]),
+                          image: imageList[3],
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -204,7 +205,7 @@ class _FeedPhotoView extends StatelessWidget {
                         color: Colors.black.withOpacity(0.4),
                         child: Center(
                           child: Text(
-                            "+${urlList.length - 4}",
+                            "+${imageList.length - 4}",
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -229,7 +230,7 @@ class _FeedPhotoView extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
-          final list = urlList;
+          final list = imageList;
           final length = list.length;
           if (length == 0) {
             return const SizedBox();

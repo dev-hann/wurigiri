@@ -25,6 +25,7 @@ class ChatViewModel {
     _initScrollController();
     loadNextChatList();
     chatController.enterChatRoom(userID);
+    scrollToBottom();
   }
 
   void dispose() {
@@ -47,6 +48,7 @@ class ChatViewModel {
         }
         chatController.enterChatRoom(userID);
         chatController.update();
+        scrollToBottom();
       },
     );
   }
@@ -67,29 +69,32 @@ class ChatViewModel {
     replyChat = null;
     chatController.updateChat(newChat);
     textChatController.clear();
-    scrollToBottom();
   }
 
   void sendPhotoChat() async {
-    final image = await Controller.overlayLoading(
+    final imageList = await Controller.overlayLoading(
       asyncFunction: () async {
-        return await WImagePicker.pickImage();
+        return await WImagePicker.pickImageList();
       },
     );
-    if (image == null) {
+    if (imageList.isEmpty) {
       return;
     }
     final newChat = PhotoChat(
       senderIndex: userID,
       dateTime: DateTime.now(),
-      photoURL: "",
-      thumbData: image.thumbData,
+      photoList: const [],
+      thumbList: imageList.map((e) => e.thumbData).toList(),
     );
     chatList.add(newChat);
     chatController.update();
-    final photoURL = await fileController.uploadFile(image.path);
+    final List<String> photoList = [];
+    for (final image in imageList) {
+      final url = await fileController.uploadFile(image.path);
+      photoList.add(url);
+    }
     final updatedChat = newChat.copyWith(
-      photoURL: photoURL,
+      photoList: photoList,
     );
     chatController.updateChat(updatedChat);
     chatController.update([chatViewID(updatedChat)]);
@@ -101,9 +106,18 @@ class ChatViewModel {
 
   final List<Chat> chatList = [];
   int _currentPage = 1;
-  void loadNextChatList() {
+  bool _loadingChatList = false;
+  Future<void> loadNextChatList() async {
+    if (_loadingChatList) {
+      return;
+    }
+    _loadingChatList = true;
     chatList.addAll(chatController.loadChatList(_currentPage));
     _currentPage++;
+    chatList.sort();
+    await Future.delayed(const Duration(seconds: 2));
+    chatController.update();
+    _loadingChatList = false;
   }
 
   final Map<String, ChatRoomEnter> chatEnter = {};
@@ -151,9 +165,12 @@ class ChatViewModel {
   }
 
   void onTapRemoveChat(Chat chat) async {
-    if (chat.type == ChatType.photo) {
-      fileController.removeFile((chat as PhotoChat).photoURL);
-    }
+    // if (chat.type == ChatType.photo) {
+    //   final photoChat = chat as PhotoChat;
+    //   for (final image in photoChat.photoList) {
+    //     fileController.removeFile(image);
+    //   }
+    // }
     final removedChat = RemovedChat.fromChat(chat);
     await chatController.updateChat(removedChat);
     chatController.update([chatViewID(removedChat)]);
@@ -185,6 +202,12 @@ class ChatViewModel {
 
   void _scrollListener() {
     hideToolTip();
+    if (scrollController.position.outOfRange) {
+      final offset = scrollController.offset;
+      if (offset > 0) {
+        loadNextChatList();
+      }
+    }
   }
 
   void _disposeScrollController() {
@@ -218,8 +241,8 @@ class ChatViewModel {
   }
 
   void scrollToBottom() {
-    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    Future.delayed(const Duration(milliseconds: 200)).then((value) {
+      scrollController.jumpTo(0);
     });
   }
 

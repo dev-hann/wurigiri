@@ -131,18 +131,22 @@ class _ChatOverlay extends StatelessWidget {
   final AxisDirection direction;
 
   Widget button({
-    required String text,
+    required Widget text,
+    required Widget icon,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(text),
-          ),
-          const Icon(Icons.abc),
-        ],
+      child: ColoredBox(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Expanded(
+              child: text,
+            ),
+            icon,
+          ],
+        ),
       ),
     );
   }
@@ -168,9 +172,23 @@ class _ChatOverlay extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      button(text: "답변", onTap: onTapReply),
+                      button(
+                        onTap: onTapReply,
+                        text: const Text("답변"),
+                        icon: const Icon(Icons.reply),
+                      ),
                       const Divider(),
-                      button(text: "삭제", onTap: onTapRemove),
+                      button(
+                        onTap: onTapRemove,
+                        text: const Text(
+                          "삭제",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -11,6 +11,9 @@ class DataBase {
   }
 
   String lastIndex() {
+    if (box.isEmpty) {
+      return "0";
+    }
     return box.keys.last.toString();
   }
 
@@ -30,10 +33,20 @@ class DataBase {
     if (page == null) {
       return list;
     }
-    return list.sublist(
-      (page - 1) * stride,
-      min(list.length, page * stride),
-    );
+    final length = list.length;
+    final begin = (page - 1) * stride;
+    if (begin > length) {
+      return [];
+    }
+    final end = min(length, page * stride);
+    return list.reversed
+        .toList()
+        .sublist(
+          begin,
+          end,
+        )
+        .reversed
+        .toList();
   }
 
   Future update(String key, Map<String, dynamic> data) {

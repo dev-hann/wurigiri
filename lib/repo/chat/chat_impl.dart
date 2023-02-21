@@ -14,18 +14,16 @@ class ChatImpl extends ChatRepo {
     _initChatEnterStream();
   }
 
-  bool _chatStreanInited = false;
   void _initChatStream() {
     service.chatRef(publicID).snapshots().listen((event) async {
-      if (!_chatStreanInited) {
-        _chatStreanInited = true;
-        return;
-      }
+      final lastIndex = int.parse(chatDB.lastIndex());
       final itemList = event.docChanges;
       for (final item in itemList) {
         final index = item.doc.id;
-        final data = item.doc.data() as Map<String, dynamic>;
-        await chatDB.update(index, data);
+        if (int.parse(index) > lastIndex) {
+          final data = item.doc.data() as Map<String, dynamic>;
+          await chatDB.update(index, data);
+        }
       }
     });
   }
@@ -42,7 +40,10 @@ class ChatImpl extends ChatRepo {
 
   @override
   List<Map<String, dynamic>> loadChatList(int page) {
-    return chatDB.getAll();
+    return chatDB.getAll(
+      page: page,
+      stride: 30,
+    );
   }
 
   @override

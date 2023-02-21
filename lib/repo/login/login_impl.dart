@@ -46,8 +46,9 @@ class LoginImpl extends LoginRepo {
   }
 
   @override
-  Future requestConnection(String inviteCode) {
-    return service.connectRef().doc(inviteCode).get();
+  Future requestConnection(String inviteCode) async {
+    final snapshot = await service.connectRef().doc(inviteCode).get();
+    return snapshot.data() as Map<String, dynamic>;
   }
 
   @override
