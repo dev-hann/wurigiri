@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await Controller.put(UserController(UserImpl()));
   await Controller.put(LoginController(LoginImpl()));
+  await initializeDateFormatting();
   runApp(const MyApp());
 }
 
@@ -39,10 +41,14 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future login() async {
-    final deviceID = await loginController.loadDeviceID();
+    final deviceID = await loginController.requestDeviceID();
     final user = await userController.requestUser(deviceID);
     if (user != null) {
       await userController.updateUser(user);
+      if (user.otherID.isEmpty) {
+        Get.off(Loginview());
+        return;
+      }
       await userController.reqeustOther();
     }
     Get.off(user == null ? Loginview() : const HomeView());

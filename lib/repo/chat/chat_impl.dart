@@ -15,17 +15,19 @@ class ChatImpl extends ChatRepo {
   }
 
   void _initChatStream() {
-    service.chatRef(publicID).snapshots().listen((event) async {
-      final lastIndex = int.parse(chatDB.lastIndex());
-      final itemList = event.docChanges;
-      for (final item in itemList) {
-        final index = item.doc.id;
-        if (int.parse(index) > lastIndex) {
-          final data = item.doc.data() as Map<String, dynamic>;
-          await chatDB.update(index, data);
+    service.chatRef(publicID).snapshots().listen(
+      (event) async {
+        final lastIndex = int.parse(chatDB.lastIndex());
+        final itemList = event.docChanges;
+        for (final item in itemList) {
+          final index = item.doc.id;
+          if (int.parse(index) > lastIndex) {
+            final data = item.doc.data() as Map<String, dynamic>;
+            await chatDB.update(index, data);
+          }
         }
-      }
-    });
+      },
+    );
   }
 
   @override

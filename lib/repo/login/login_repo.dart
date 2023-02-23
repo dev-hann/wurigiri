@@ -7,7 +7,7 @@ import 'package:wurigiri/repo/repo.dart';
 part 'login_impl.dart';
 
 abstract class LoginRepo extends Repo {
-  Future<String> loadDeviceID();
+  Future<String> requestDeviceID();
 
   String inviteCode();
   Stream<Map<String, dynamic>?> connectStream(String inviteCode);
@@ -19,5 +19,5 @@ abstract class LoginRepo extends Repo {
 
   Future disposeInvite(String inviteCode);
 
-  Future connected(String inviteCode, Map<String, dynamic> data);
+  Future initPublic(String inviteCode, Map<String, dynamic> data);
 }

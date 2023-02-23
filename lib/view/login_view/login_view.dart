@@ -1,15 +1,20 @@
+library login_view;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/user.dart';
-import 'package:wurigiri/view/login_view/connect_view.dart';
+import 'package:wurigiri/view/login_view/connect_view/connect_view.dart';
+import 'package:wurigiri/widget/text_field.dart';
+
+part './login_view_model.dart';
 
 class Loginview extends StatelessWidget {
   Loginview({super.key});
-  final loginController = LoginController.find();
-  final userController = UserController.find();
-  final idController = TextEditingController();
+
+  final LoginViewModel viewModel = LoginViewModel();
 
   AppBar appBar() {
     return AppBar(
@@ -21,25 +26,29 @@ class Loginview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: idController,
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final newUser = User(
-                id: await loginController.loadDeviceID(),
-                headPhoto: '',
-                name: idController.text,
-              );
-              await userController.updateUser(newUser, withServer: true);
-              Get.to(ConnectView());
-            },
-            child: const Text("ok"),
-          ),
-        ],
+      body: Center(
+        child: SizedBox(
+          width: Get.width * 0.7,
+          child: GetBuilder<LoginController>(builder: (controller) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                WTextField(
+                  controller: viewModel.idController,
+                  hintText: "닉네임을 입력해주세요",
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await viewModel.onTapNext();
+                    Get.to(ConnectView());
+                  },
+                  child: const Text("ok"),
+                ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }

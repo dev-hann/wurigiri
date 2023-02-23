@@ -8,12 +8,12 @@ class LoginImpl extends LoginRepo {
   Future init() async {}
 
   @override
-  Future<String> loadDeviceID() async {
+  Future<String> requestDeviceID() async {
     final res = await PlatformDeviceId.getDeviceId;
     if (res == null) {
       throw Exception("Device ID is Empty!");
     }
-    return res.split("-").first;
+    return res.replaceAll("-", "").substring(0, 6);
   }
 
   @override
@@ -29,7 +29,7 @@ class LoginImpl extends LoginRepo {
 
   @override
   String inviteCode() {
-    return DateTime.now().millisecondsSinceEpoch.toString().substring(6);
+    return DateTime.now().millisecondsSinceEpoch.toString().substring(7);
   }
 
   @override
@@ -52,7 +52,7 @@ class LoginImpl extends LoginRepo {
   }
 
   @override
-  Future connected(String inviteCode, Map<String, dynamic> data) {
+  Future initPublic(String inviteCode, Map<String, dynamic> data) {
     return service.publicRef(inviteCode).set(data);
   }
 }

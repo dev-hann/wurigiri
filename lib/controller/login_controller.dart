@@ -11,43 +11,35 @@ class LoginController extends Controller<LoginRepo> {
 
   static LoginController find() => Get.find<LoginController>();
 
-  Future<String> loadDeviceID() {
-    return repo.loadDeviceID();
+  Future<String> requestDeviceID() {
+    return repo.requestDeviceID();
   }
 
-  StreamSubscription? _inviteSub;
-  void _initConnectStream(String inviteCode) {
-    _inviteSub = repo.connectStream(inviteCode).listen((event) {
+  Stream<Connection?> connectionStream(String inviteCode) {
+    return repo.connectStream(inviteCode).map((event) {
       if (event == null) {
-        return;
+        return null;
       }
-      final connection = Connection.fromMap(event);
-      if (connection.guest.isNotEmpty && connection.invitator.isNotEmpty) {
-        _inviteSub?.cancel();
-        cancelInvite(inviteCode);
-        if (Get.isDialogOpen ?? false) {
-          Get.back(result: connection);
-        }
-      }
+      return Connection.fromMap(event);
     });
   }
 
-  Future cancelInvite(String inviteCode) {
+  String loadInviteCode() {
+    return repo.inviteCode();
+  }
+
+  Future disposeInvite(String inviteCode) {
     return repo.disposeInvite(inviteCode);
   }
 
-  Future<String> invite() async {
-    final inviteCode = repo.inviteCode();
-    _initConnectStream(inviteCode);
-    await repo.updateConnection(
+  Future updateConnection({
+    required String inviteCode,
+    required Connection connection,
+  }) {
+    return repo.updateConnection(
       inviteCode: inviteCode,
-      data: Connection(
-        publicID: inviteCode,
-        invitator: await loadDeviceID(),
-        guest: "",
-      ).toMap(),
+      data: connection.toMap(),
     );
-    return inviteCode;
   }
 
   Future<Connection?> connect(String inviteCode) async {
@@ -60,15 +52,15 @@ class LoginController extends Controller<LoginRepo> {
       inviteCode: inviteCode,
       data: connection
           .copyWith(
-            guest: await loadDeviceID(),
+            guest: await requestDeviceID(),
           )
           .toMap(),
     );
     return connection;
   }
 
-  Future connected(inviteCode) {
-    return repo.connected(
+  Future initPublic(String inviteCode) {
+    return repo.initPublic(
       inviteCode,
       Public.empty().toMap(),
     );

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/calendar_controller.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/feed_controller.dart';
@@ -6,6 +7,7 @@ import 'package:wurigiri/controller/file_controller.dart';
 import 'package:wurigiri/controller/notify_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/repo/calendar/calendar_repo.dart';
 import 'package:wurigiri/repo/chat/chat_repo.dart';
 import 'package:wurigiri/repo/feed/feed_repo.dart';
 import 'package:wurigiri/repo/file/file_repo.dart';
@@ -25,6 +27,10 @@ class HomeViewModel {
     );
     Controller.put(
       FeedController(FeedImpl(publicID)),
+    );
+
+    Controller.put(
+      CalendarController(CalendarImpl(publicID)),
     );
     publicController = await Controller.put(
       PublicController(PublicImpl(publicID)),

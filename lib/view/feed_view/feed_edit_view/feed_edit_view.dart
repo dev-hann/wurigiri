@@ -10,7 +10,7 @@ class FeedEditView extends StatelessWidget {
   final FeedEditViewModel viewModel = FeedEditViewModel();
   AppBar appBar() {
     return AppBar(
-      title: const Text("FeedEditView!!"),
+      // title: const Text("글 작성하기"),
       actions: [
         IconButton(
           onPressed: () async {
@@ -94,13 +94,19 @@ class FeedEditView extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: appBar(),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  photoListView(),
-                  Padding(
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: photoListView(),
+                ),
+                Expanded(
+                  flex: 9,
+                  child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         titleView(),
                         const Divider(height: 1),
@@ -111,8 +117,8 @@ class FeedEditView extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

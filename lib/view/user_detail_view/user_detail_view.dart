@@ -1,9 +1,11 @@
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/user.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view_model.dart';
+import 'package:wurigiri/widget/bottom_sheet.dart';
 import 'package:wurigiri/widget/head_photo.dart';
 
 class UserDetailView extends StatefulWidget {
@@ -41,17 +43,34 @@ class _UserDetailViewState extends State<UserDetailView> {
       if (viewModel.isOther) {
         return null;
       }
-      return GestureDetector(
-        onTap: () async {
-          viewModel.editHeadPhoto();
-        },
-        child: const Icon(Icons.camera),
-      );
+      return const Icon(Icons.camera);
     }
 
     return WHeadPhoto(
       viewModel.user.headPhoto,
       badge: cameraBadge(),
+      onTapBadge: () {
+        WBottomSheet.image(
+          onTapCamera: () {
+            viewModel.editHeadPhoto(ImageSource.camera);
+            Get.back();
+          },
+          onTapGarelly: () {
+            viewModel.editHeadPhoto(ImageSource.gallery);
+            Get.back();
+          },
+          onTapRemove: viewModel.user.headPhoto.isEmpty
+              ? null
+              : () {
+                  viewModel.removeHeadPhoto();
+                  Get.back();
+                },
+          onTapCancel: () {
+            Get.back();
+          },
+        ).show(context);
+        // viewModel.editHeadPhoto();
+      },
     );
   }
 

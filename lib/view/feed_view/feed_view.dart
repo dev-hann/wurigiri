@@ -27,7 +27,7 @@ class _FeedViewState extends State<FeedView> {
 
   AppBar appBar() {
     return AppBar(
-      title: const Text("FeedView"),
+      title: const Text("50𝓚𝓖𝓻𝓪𝓶"),
       actions: [
         IconButton(
           onPressed: () async {},

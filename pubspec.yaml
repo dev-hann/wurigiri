@@ -1,5 +1,5 @@
 name: wurigiri
-description: 지영이랑 여환이랑 우리끼리
+description: couple app
 version: 1.0.0+1
 
 environment:
@@ -23,16 +23,17 @@ dependencies:
 
   # Utils
   equatable:
-  image_picker: ^0.8.6+1
   platform_device_id: ^1.0.1
   badges:
+  image_picker: ^0.8.6+1
   image_cropper: ^3.0.1
   flutter_image_compress: ^1.0.0-nullsafety
   intl:
-  just_the_tooltip: ^0.0.12
   cached_network_image: ^3.2.3
   auto_size_text_field: ^2.2.1
   reorderables:
+  table_calendar: ^3.0.9
+  flutter_slidable:
 
 dev_dependencies:
   flutter_test:

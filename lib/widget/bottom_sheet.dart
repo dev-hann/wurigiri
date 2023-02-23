@@ -15,6 +15,47 @@ class WBottomSheet extends StatelessWidget {
 
   final WBottomSheetButton? cancelButton;
 
+  static WBottomSheet image({
+    VoidCallback? onTapCamera,
+    VoidCallback? onTapGarelly,
+    VoidCallback? onTapRemove,
+    required VoidCallback onTapCancel,
+  }) {
+    final List<WBottomSheetButton> actionList = [];
+    if (onTapCamera != null) {
+      actionList.add(
+        WBottomSheetButton(
+          onTap: onTapCamera,
+          text: "카메라",
+        ),
+      );
+    }
+    if (onTapGarelly != null) {
+      actionList.add(
+        WBottomSheetButton(
+          onTap: onTapGarelly,
+          text: "앨범",
+        ),
+      );
+    }
+    if (onTapRemove != null) {
+      actionList.add(
+        WBottomSheetButton(
+          onTap: onTapRemove,
+          isRed: true,
+          text: "삭제",
+        ),
+      );
+    }
+    return WBottomSheet(
+      title: const Text("사진 선택"),
+      actions: actionList,
+      cancelButton: WBottomSheetButton.cancel(
+        onTap: onTapCancel,
+      ),
+    );
+  }
+
   Future show(BuildContext context) {
     return showCupertinoModalPopup(
       context: context,
@@ -49,7 +90,7 @@ class WBottomSheetButton extends StatelessWidget {
   final bool isRed;
 
   factory WBottomSheetButton.cancel({
-    String text = "Cancel",
+    String text = "취소",
     required VoidCallback onTap,
   }) {
     return WBottomSheetButton(

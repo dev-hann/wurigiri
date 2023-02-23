@@ -5,4 +5,11 @@ class WTimeFormat {
   final DateTime dateTime;
 
   String get dateFormat => DateFormat("yyyy-mm-dd").format(dateTime);
+
+  int calculateDay() {
+    final now = DateTime.now();
+    final nowDateTime = DateTime(now.year, now.month, now.day);
+    final other = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    return other.difference(nowDateTime).inDays;
+  }
 }

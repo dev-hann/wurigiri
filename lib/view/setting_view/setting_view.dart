@@ -10,7 +10,7 @@ class SettingView extends StatelessWidget {
   final SettingViewModel viewModel = SettingViewModel();
   AppBar appBar() {
     return AppBar(
-      title: const Text("Setting View"),
+      title: const Text("설정"),
     );
   }
 
@@ -36,14 +36,45 @@ class SettingView extends StatelessWidget {
     );
   }
 
+  Widget settingCard({
+    required String title,
+    required List<Widget> itemList,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(title),
+        const SizedBox(height: 8.0),
+        Card(
+          child: Column(
+            children: itemList,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(),
-      body: Column(
-        children: [
-          headPhoto(),
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            headPhoto(),
+            const SizedBox(height: 16.0),
+            settingCard(
+              title: "Title",
+              itemList: [
+                const ListTile(
+                  title: Text("TestItem"),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

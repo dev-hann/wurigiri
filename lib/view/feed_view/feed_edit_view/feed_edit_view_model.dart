@@ -31,6 +31,7 @@ class FeedEditViewModel {
           title: titleController.text,
           dateTime: DateTime.now(),
           desc: descController.text,
+          thumbList: photoList.map((e) => e.thumbData).toList(),
           photoList: urlList,
         );
       },

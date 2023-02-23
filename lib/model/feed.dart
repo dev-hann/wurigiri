@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 class Feed extends Equatable with Comparable<Feed> {
@@ -5,12 +8,14 @@ class Feed extends Equatable with Comparable<Feed> {
     required this.title,
     required this.dateTime,
     required this.photoList,
+    required this.thumbList,
     required this.desc,
   });
   String get index => dateTime.millisecondsSinceEpoch.toString();
   final String title;
   final DateTime dateTime;
   final List<String> photoList;
+  final List<Uint8List> thumbList;
   final String desc;
   @override
   List<Object?> get props => [index];
@@ -20,6 +25,7 @@ class Feed extends Equatable with Comparable<Feed> {
       "title": title,
       "dateTime": dateTime.millisecondsSinceEpoch,
       "photoList": photoList,
+      "thumbList": thumbList.map((e) => base64Encode(e)).toList(),
       "desc": desc,
     };
   }
@@ -30,6 +36,9 @@ class Feed extends Equatable with Comparable<Feed> {
       title: data["title"],
       dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
       photoList: List.from(data["photoList"]),
+      thumbList: List<Uint8List>.from(
+        List<String>.from(data["thumbList"]).map((e) => base64Decode(e)),
+      ),
       desc: data["desc"],
     );
   }

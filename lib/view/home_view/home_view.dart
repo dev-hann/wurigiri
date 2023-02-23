@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/view/calendar_view/calendar_view.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
 import 'package:wurigiri/view/home_view/home_view_model.dart';
@@ -71,11 +72,17 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(width: 8.0),
             IconButton(
               onPressed: () {
+                Get.to(const CalendarView());
+              },
+              icon: const Icon(Icons.calendar_month),
+            ),
+            const SizedBox(width: 8.0),
+            IconButton(
+              onPressed: () {
                 Get.to(const ChatView());
               },
               icon: const Icon(Icons.chat),
             ),
-            const SizedBox(width: 8.0),
           ],
         ),
       ),

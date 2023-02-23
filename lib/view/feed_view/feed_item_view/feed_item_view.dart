@@ -1,6 +1,5 @@
 library feed_item_view;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:wurigiri/model/feed.dart';
 import 'package:wurigiri/util/time_format.dart';
@@ -46,9 +45,7 @@ class _FeedItemViewState extends State<FeedItemView>
 
   Widget photoView() {
     return WImageLayOut(
-      imageList: widget.feed.photoList
-          .map((e) => CachedNetworkImageProvider(e))
-          .toList(),
+      imageList: widget.feed.thumbList.map((e) => MemoryImage(e)).toList(),
       onTapPhoto: widget.onTaPhoto,
     );
   }

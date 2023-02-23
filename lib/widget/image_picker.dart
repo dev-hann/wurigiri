@@ -10,7 +10,6 @@ class WImagePicker {
   static final ImageCropper _cropper = ImageCropper();
 
   static Future<List<WImage>> pickImageList({
-    ImageSource source = ImageSource.gallery,
     CompressOption option = const CompressOption.feed(),
   }) async {
     final itemList = await _picker.pickMultiImage(

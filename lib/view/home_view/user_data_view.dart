@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wurigiri/consts/const.dart';
 import 'package:wurigiri/model/user.dart';
+import 'package:wurigiri/util/time_format.dart';
 import 'package:wurigiri/widget/head_photo.dart';
 
 class UserDataView extends StatelessWidget {
@@ -15,7 +16,7 @@ class UserDataView extends StatelessWidget {
   final Function(User user) onTapUser;
 
   Widget dDayText() {
-    final inDays = DateTime.now().difference(firstMeet).inDays + 1;
+    final inDays = WTimeFormat(firstMeet).calculateDay().abs();
     return Column(
       children: [
         Text("$inDays일째"),

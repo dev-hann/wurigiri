@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
 import 'package:wurigiri/model/user.dart';
 import 'package:wurigiri/widget/image_picker.dart';
@@ -19,8 +21,11 @@ class UserDetailViewModel {
     isOther = userController.other.id == user.id;
   }
 
-  void editHeadPhoto() async {
+  void editHeadPhoto(
+    ImageSource source,
+  ) async {
     final res = await WImagePicker.pickImage(
+      source: source,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
       ],
@@ -28,7 +33,7 @@ class UserDetailViewModel {
     if (res == null) {
       return;
     }
-    userController.loadingOverlay(
+    Controller.overlayLoading(
       asyncFunction: () async {
         final userHeadPhoto = user.headPhoto;
         final headPhotoURL = await fileController.uploadFile(
@@ -45,6 +50,19 @@ class UserDetailViewModel {
         );
         return true;
       },
+    );
+  }
+
+  void removeHeadPhoto() {
+    final userHeadPhoto = user.headPhoto;
+    fileController.removeFile(userHeadPhoto);
+    final newUser = user.copyWith(
+      headPhoto: "",
+    );
+    user = newUser;
+    userController.updateUser(
+      newUser,
+      withServer: true,
     );
   }
 
