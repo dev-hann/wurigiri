@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/model/connection.dart';
-import 'package:wurigiri/model/public.dart';
+import 'package:wurigiri/model/public/public.dart';
 import 'package:wurigiri/repo/login/login_repo.dart';
 
 class LoginController extends Controller<LoginRepo> {

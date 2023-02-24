@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 class WTitle extends StatelessWidget {
-  final Widget title;
-  final Widget child;
-
   const WTitle({
     super.key,
     required this.title,
+    this.onTapTitle,
+    this.trailing = const SizedBox(),
     required this.child,
   });
+  final VoidCallback? onTapTitle;
+  final Widget title;
+  final Widget child;
+  final Widget trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,17 @@ class WTitle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        title,
+        GestureDetector(
+          onTap: () {
+            onTapTitle?.call();
+          },
+          child: Row(
+            children: [
+              Expanded(child: title),
+              trailing,
+            ],
+          ),
+        ),
         const SizedBox(height: 8.0),
         child,
       ],

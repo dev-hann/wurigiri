@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/controller.dart';
-import 'package:wurigiri/model/public.dart';
+import 'package:wurigiri/model/public/public.dart';
 import 'package:wurigiri/repo/public/public_repo.dart';
 
 class PublicController extends Controller<PublicRepo> {
@@ -27,8 +27,11 @@ class PublicController extends Controller<PublicRepo> {
     });
   }
 
-  Future updatePublic(Public newPublic) async {
-    await repo.updatePublic(newPublic.toMap());
-    update();
+  Future updatePublic(Public newPublic) {
+    return repo.updatePublic(newPublic.toMap());
+  }
+
+  Future updateHomeSetting(HomeSetting homeSetting) {
+    return updatePublic(public.copyWith(homeSetting: homeSetting));
   }
 }

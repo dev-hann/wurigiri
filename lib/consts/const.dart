@@ -7,5 +7,5 @@ class WColor {
   static Color black = const Color(0xFF333333);
 }
 
-const String wFirstMeet = "2019-03-07";
-final firstMeet = DateTime(2019, 03, 07);
+// const String wFirstMeet = "2019-03-07";
+// final firstMeet = DateTime(2019, 03, 07);

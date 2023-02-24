@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wurigiri/controller/chat_controller.dart';
 import 'package:wurigiri/model/chat/chat.dart';
+import 'package:wurigiri/view/chat_view/call_view/call_view.dart';
+import 'package:wurigiri/view/chat_view/chat_detail_view/chat_detail_view.dart';
 import 'package:wurigiri/view/chat_view/chat_item_view/chat_item_view.dart';
 import 'package:wurigiri/view/chat_view/chat_view_model.dart';
-import 'package:wurigiri/view/chat_view/reply_chat_view.dart';
+import 'package:wurigiri/view/chat_view/replay_chat_view/reply_chat_view.dart';
 import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
 import 'package:wurigiri/widget/photo_view/photo_view.dart';
 
@@ -32,6 +34,14 @@ class _ChatViewState extends State<ChatView> {
   AppBar appBar() {
     return AppBar(
       backgroundColor: Colors.transparent,
+      actions: [
+        IconButton(
+          onPressed: () {
+            Get.to(const ChatDetailView());
+          },
+          icon: const Icon(Icons.menu),
+        ),
+      ],
     );
   }
 
@@ -45,6 +55,15 @@ class _ChatViewState extends State<ChatView> {
           viewModel.sendPhotoChat();
         },
         icon: const Icon(Icons.photo),
+      );
+    }
+
+    Widget callButton() {
+      return IconButton(
+        onPressed: () {
+          Get.to(const CallView());
+        },
+        icon: Icon(Icons.phone),
       );
     }
 
@@ -95,6 +114,7 @@ class _ChatViewState extends State<ChatView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   photoButton(replyChat),
+                  callButton(),
                   Expanded(
                     child: textField(replyChat),
                   ),

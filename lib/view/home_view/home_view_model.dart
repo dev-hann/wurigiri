@@ -1,35 +1,21 @@
-import 'package:get/get.dart';
-import 'package:wurigiri/controller/calendar_controller.dart';
-import 'package:wurigiri/controller/chat_controller.dart';
-import 'package:wurigiri/controller/controller.dart';
-import 'package:wurigiri/controller/feed_controller.dart';
-import 'package:wurigiri/controller/file_controller.dart';
-import 'package:wurigiri/controller/notify_controller.dart';
-import 'package:wurigiri/controller/public_controller.dart';
-import 'package:wurigiri/controller/user_controller.dart';
-import 'package:wurigiri/repo/calendar/calendar_repo.dart';
-import 'package:wurigiri/repo/chat/chat_repo.dart';
-import 'package:wurigiri/repo/feed/feed_repo.dart';
-import 'package:wurigiri/repo/file/file_repo.dart';
-import 'package:wurigiri/repo/notify/notify_repo.dart';
-import 'package:wurigiri/repo/public/public_repo.dart';
-import 'package:wurigiri/widget/image_picker.dart';
+part of home_view;
 
 class HomeViewModel {
   final userController = UserController.find();
   late final FileController fileController;
   late final PublicController publicController;
+  bool isLoading = true;
   void init() async {
     final publicID = userController.publicID;
     userController.reqeustOther();
-    Controller.put(
+    await Controller.put(
       ChatController(ChatImpl(publicID)),
     );
-    Controller.put(
+    await Controller.put(
       FeedController(FeedImpl(publicID)),
     );
 
-    Controller.put(
+    await Controller.put(
       CalendarController(CalendarImpl(publicID)),
     );
     publicController = await Controller.put(
@@ -39,40 +25,47 @@ class HomeViewModel {
       FileController(FileImpl()),
     );
     Get.put(NotifyController(NotifyImpl()));
+    isLoading = false;
+    userController.update();
   }
 
-  String get backgroundURL => publicController.public.mainPhoto;
+  User get user => userController.user;
+  User get other => userController.other;
+  Public get public => publicController.public;
+  DateTime get firstMeet => public.firstMeet;
+  HomeSetting get homeSetting => public.homeSetting;
+  String get mainPhotoURL => homeSetting.photo;
 
-  Future<void> updateBackgroundPhoto() async {
+  Future<void> updateHomePhoto() async {
     final res = await WImagePicker.pickImage();
     if (res == null) {
       return;
     }
-    Controller.overlayLoading(
+    await Controller.overlayLoading(
       asyncFunction: () async {
-        final public = publicController.public;
         final url = await fileController.uploadFile(
           res.path,
-          removePath: public.mainPhoto,
+          removePath: mainPhotoURL,
         );
-        await publicController.updatePublic(
-          public.copyWith(mainPhoto: url),
+        await publicController.updateHomeSetting(
+          homeSetting.copyWith(photo: url),
         );
+        publicController.update();
         return true;
       },
     );
   }
 
-  void removeBackgroundPhoto() {
-    Controller.overlayLoading(
+  Future<void> removeHomePhoto() async {
+    await Controller.overlayLoading(
       asyncFunction: () async {
-        final public = publicController.public;
-        if (public.mainPhoto.isNotEmpty) {
-          fileController.removeFile(public.mainPhoto);
+        if (mainPhotoURL.isNotEmpty) {
+          fileController.removeFile(mainPhotoURL);
         }
-        await publicController.updatePublic(
-          public.copyWith(mainPhoto: ""),
+        await publicController.updateHomeSetting(
+          homeSetting.copyWith(photo: ""),
         );
+        publicController.update();
       },
     );
   }

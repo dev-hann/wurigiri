@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:wurigiri/model/chat/chat.dart';
 import 'package:wurigiri/model/user.dart';
-import 'package:wurigiri/view/chat_view/reply_chat_view.dart';
+import 'package:wurigiri/view/chat_view/replay_chat_view/reply_chat_view.dart';
 import 'package:wurigiri/widget/head_photo.dart';
 import 'package:wurigiri/widget/image_layout.dart';
 import 'package:wurigiri/widget/loading.dart';

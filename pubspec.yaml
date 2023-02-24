@@ -34,12 +34,14 @@ dependencies:
   reorderables:
   table_calendar: ^3.0.9
   flutter_slidable:
+  flutter_datetime_picker: ^1.5.1
+  livekit_client: ^1.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  flutter_native_splash: ^1.2.1
+  flutter_native_splash: ^2.2.18
 flutter:
   uses-material-design: true
   fonts:

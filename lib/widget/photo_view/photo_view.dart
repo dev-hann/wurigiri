@@ -12,6 +12,15 @@ class WPhotoView extends StatefulWidget {
 
   final List<String> photoList;
   final int initIndex;
+  factory WPhotoView.fromItem({
+    required List<String> photoList,
+    required String initItem,
+  }) {
+    return WPhotoView(
+      photoList: photoList,
+      initIndex: photoList.indexWhere((element) => element == initItem),
+    );
+  }
 
   @override
   State<WPhotoView> createState() => _WPhotoViewState();
@@ -54,14 +63,6 @@ class _WPhotoViewState extends State<WPhotoView> {
     });
   }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    for (final provider in providerList) {
-      await precacheImage(provider, context);
-    }
-  }
-
   Widget appBar() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -90,12 +91,13 @@ class _WPhotoViewState extends State<WPhotoView> {
               controller: pageController,
               itemCount: widget.photoList.length,
               itemBuilder: (context, index) {
+                final url = widget.photoList[index];
                 return GestureDetector(
                   onTap: () {
                     _tapNotifier.value = !_tapNotifier.value;
                   },
                   child: _PageImage(
-                    url: widget.photoList[index],
+                    url: url,
                   ),
                 );
               },

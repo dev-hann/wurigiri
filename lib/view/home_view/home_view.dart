@@ -1,32 +1,37 @@
 library home_view;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wurigiri/controller/calendar_controller.dart';
+import 'package:wurigiri/controller/chat_controller.dart';
+import 'package:wurigiri/controller/controller.dart';
+import 'package:wurigiri/controller/feed_controller.dart';
+import 'package:wurigiri/controller/file_controller.dart';
+import 'package:wurigiri/controller/notify_controller.dart';
 import 'package:wurigiri/controller/public_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/model/public/public.dart';
+import 'package:wurigiri/model/user.dart';
+import 'package:wurigiri/repo/calendar/calendar_repo.dart';
+import 'package:wurigiri/repo/chat/chat_repo.dart';
+import 'package:wurigiri/repo/feed/feed_repo.dart';
+import 'package:wurigiri/repo/file/file_repo.dart';
+import 'package:wurigiri/repo/notify/notify_repo.dart';
+import 'package:wurigiri/repo/public/public_repo.dart';
 import 'package:wurigiri/view/calendar_view/calendar_view.dart';
 import 'package:wurigiri/view/chat_view/chat_view.dart';
 import 'package:wurigiri/view/feed_view/feed_view.dart';
-import 'package:wurigiri/view/home_view/home_view_model.dart';
-import 'package:wurigiri/view/home_view/user_data_view.dart';
+import 'package:wurigiri/view/home_view/user_data_view/user_data_view.dart';
 import 'package:wurigiri/view/setting_view/setting_view.dart';
-import 'package:wurigiri/view/user_detail_view/user_detail_view.dart';
 import 'package:wurigiri/widget/background.dart';
 import 'package:wurigiri/widget/bottom_sheet.dart';
 import 'package:wurigiri/widget/glass_box.dart';
-import 'package:wurigiri/widget/image_view.dart';
+import 'package:wurigiri/widget/image_picker.dart';
+import 'package:wurigiri/widget/loading.dart';
+part './home_view_model.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
-
-  static MaterialPageRoute<void> route() {
-    return MaterialPageRoute(
-      builder: (context) {
-        return const HomeView();
-      },
-    );
-  }
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -42,17 +47,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget userDataWidget() {
     return WGlassBox(
-      child: GetBuilder<UserController>(
-        builder: (controller) {
-          return UserDataView(
-            me: controller.user,
-            other: controller.other,
-            onTapUser: (user) {
-              Get.to(UserDetailView(user: user));
-            },
-          );
-        },
-      ),
+      child: UserDataView(),
     );
   }
 
@@ -98,18 +93,18 @@ class _HomeViewState extends State<HomeView> {
               WBottomSheetButton(
                 text: "Select Photo",
                 onTap: () {
-                  viewModel.updateBackgroundPhoto();
+                  viewModel.updateHomePhoto();
                   Get.back();
                 },
               ),
             ];
-            if (viewModel.backgroundURL.isNotEmpty) {
+            if (viewModel.mainPhotoURL.isNotEmpty) {
               actionList.add(
                 WBottomSheetButton(
                   text: "Remove Photo",
                   isRed: true,
                   onTap: () {
-                    viewModel.removeBackgroundPhoto();
+                    viewModel.removeHomePhoto();
                     Get.back();
                   },
                 ),
@@ -142,56 +137,30 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget backgroundImg(String url) {
-    if (url.isEmpty) {
-      return const SizedBox();
-    }
-    return ShaderMask(
-      blendMode: BlendMode.srcATop,
-      shaderCallback: (Rect bounds) {
-        return LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withOpacity(0.4),
-            Colors.transparent,
-            Colors.black.withOpacity(0.6),
-          ],
-        ).createShader(bounds);
-      },
-      child: WImageView(
-        CachedNetworkImageProvider(url),
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PublicController>(
+    return GetBuilder<UserController>(
       builder: (controller) {
-        final backgroundURL = controller.public.mainPhoto;
+        if (viewModel.isLoading) {
+          return const WLoading();
+        }
+        final mainPhotoURL = viewModel.mainPhotoURL;
         return WBackground(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              backgroundImg(backgroundURL),
-              Scaffold(
-                appBar: appBar(),
-                backgroundColor: Colors.transparent,
-                body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(),
-                      // userDataWidget(),
-                      icons(),
-                    ],
-                  ),
-                ),
+          backgroundURL: mainPhotoURL,
+          child: Scaffold(
+            appBar: appBar(),
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(),
+                  // userDataWidget(),
+                  icons(),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },

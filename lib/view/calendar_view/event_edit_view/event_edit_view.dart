@@ -2,7 +2,6 @@ part of calendar_view;
 
 class _EventEditView extends StatelessWidget {
   const _EventEditView({
-    super.key,
     required this.event,
   });
   final CalendarEvent event;
