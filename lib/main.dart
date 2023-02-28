@@ -6,6 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:wurigiri/controller/controller.dart';
 import 'package:wurigiri/controller/login_controller.dart';
 import 'package:wurigiri/controller/user_controller.dart';
+import 'package:wurigiri/firebase_options.dart';
 
 import 'package:wurigiri/repo/login/login_repo.dart';
 import 'package:wurigiri/repo/user/user_repo.dart';
@@ -16,7 +17,9 @@ import 'package:wurigiri/widget/loading.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Controller.put(UserController(UserImpl()));
   await Controller.put(LoginController(LoginImpl()));
   await initializeDateFormatting();

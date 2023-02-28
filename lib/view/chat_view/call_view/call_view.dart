@@ -31,7 +31,8 @@ class _CallViewState extends State<CallView> {
   }
 
   void init() async {
-    const token = "TestToken";
+    const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzc1NzE5NjUsImlzcyI6IkFQSTdtejhFUlhXM3NWUCIsIm5iZiI6MTY3NzU3MTA2NSwic3ViIjoiYXBwIiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InRlc3RSb29tIiwicm9vbUpvaW4iOnRydWV9fQ.62r1ZXhwH2NWafkLtWMRXn40lIBFDtGe5SmWseik4E8";
     const url = "wss://wurigiri-28llb3ms.livekit.cloud";
 
     await room.connect(url, token, roomOptions: roomOptions);
