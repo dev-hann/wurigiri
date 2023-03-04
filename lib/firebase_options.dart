@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '318733930126',
     projectId: 'wurigiri-34a71',
     storageBucket: 'wurigiri-34a71.appspot.com',
-    iosClientId: '318733930126-oikji2q28so419pht6fg77e5utdaj5pa.apps.googleusercontent.com',
+    iosClientId:
+        '318733930126-oikji2q28so419pht6fg77e5utdaj5pa.apps.googleusercontent.com',
     iosBundleId: 'com.example.wurigiri',
   );
 }
